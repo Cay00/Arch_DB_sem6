@@ -3,4 +3,22 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="title_auth">Konto</string>
+    <string name="auth_heading_login">Logowanie</string>
+    <string name="auth_heading_register">Rejestracja</string>
+    <string name="auth_subtitle_login">Zaloguj się, aby korzystać z aplikacji.</string>
+    <string name="auth_subtitle_register">Utwórz konto, aby rozpocząć.</string>
+    <string name="auth_email_hint">E-mail</string>
+    <string name="auth_password_hint">Hasło</string>
+    <string name="auth_action_login">Zaloguj się</string>
+    <string name="auth_action_register">Zarejestruj się</string>
+    <string name="auth_switch_to_register">Nie masz konta? Zarejestruj się</string>
+    <string name="auth_switch_to_login">Masz już konto? Zaloguj się</string>
+    <string name="auth_error_email_required">Podaj e-mail</string>
+    <string name="auth_error_password_required">Podaj hasło</string>
+    <string name="auth_error_password_short">Hasło musi mieć co najmniej 6 znaków</string>
+    <string name="auth_error_generic">Nie udało się. Spróbuj ponownie.</string>
+
+    <string name="action_logout">Wyloguj</string>
 </resources>
