@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154615027826",
+    "project_id": "urbanfix-99895",
+    "storage_bucket": "urbanfix-99895.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154615027826:android:3bf7a59e41af3221f24aeb",
+        "android_client_info": {
+          "package_name": "com.example.urbanfix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwUJ_GxAARikmmdbXuiK4WQiSiM5LYVJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
