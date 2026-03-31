@@ -2,11 +2,5 @@
     <string name="app_name">urbanfix</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Powiadomienia</string>
-    <string name="report_road_damage">Uszkodzenia nawierzchni jezdni</string>
-    <string name="report_street_lighting">Awarie oświetlenia ulicznego</string>
-    <string name="report_waste_management">Nieprawidłowości w gospodarce odpadami</string>
-    <string name="report_sidewalks_and_walkways">Usterki chodników i ciągów pieszych</string>
-    <string name="report_urban_greenery">Interwencje dotyczące zieleni miejskiej</string>
-    <string name="report_public_safety">Zagrożenia bezpieczeństwa publicznego</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

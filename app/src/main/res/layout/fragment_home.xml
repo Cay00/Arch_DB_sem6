@@ -1,97 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <GridLayout
+    <TextView
+        android:id="@+id/text_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alignmentMode="alignMargins"
-        android:columnCount="2"
-        android:rowCount="3"
-        android:padding="16dp"
-        android:useDefaultMargins="true"
-        android:layout_marginTop="?attr/actionBarSize">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_road_damage"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_marginBottom="16dp"
-            android:text="@string/report_road_damage"
-            app:icon="@android:drawable/ic_menu_compass"
-            app:iconGravity="textTop"
-            app:iconPadding="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_street_lighting"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_marginBottom="16dp"
-            android:text="@string/report_street_lighting"
-            app:icon="@android:drawable/ic_menu_day"
-            app:iconGravity="textTop"
-            app:iconPadding="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_waste_management"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_marginBottom="16dp"
-            android:text="@string/report_waste_management"
-            app:icon="@android:drawable/ic_menu_delete"
-            app:iconGravity="textTop"
-            app:iconPadding="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sidewalks_and_walkways"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_marginBottom="16dp"
-            android:text="@string/report_sidewalks_and_walkways"
-            app:icon="@android:drawable/ic_menu_directions"
-            app:iconGravity="textTop"
-            app:iconPadding="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_urban_greenery"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_marginBottom="16dp"
-            android:text="@string/report_urban_greenery"
-            app:icon="@android:drawable/ic_menu_gallery"
-            app:iconGravity="textTop"
-            app:iconPadding="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_public_safety"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_marginBottom="16dp"
-            android:text="@string/report_public_safety"
-            app:icon="@android:drawable/ic_dialog_alert"
-            app:iconGravity="textTop"
-            app:iconPadding="12dp" />
-    </GridLayout>
-</androidx.core.widget.NestedScrollView>
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
