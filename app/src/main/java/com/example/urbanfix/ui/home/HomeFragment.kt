@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -32,6 +33,20 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        binding.root.findViewById<View>(R.id.tile_road_damage)?.setOnClickListener {
+            // TODO: Otwórz ekran zgłoszenia uszkodzenia nawierzchni
+        }
+        binding.root.findViewById<View>(R.id.tile_street_lighting)?.setOnClickListener {
+            // TODO: Otwórz ekran zgłoszenia awarii oświetlenia
+        }
+        binding.root.findViewById<View>(R.id.tile_illegal_dumping)?.setOnClickListener {
+            // TODO: Otwórz ekran zgłoszenia nielegalnego wysypiska
+        }
+        binding.root.findViewById<View>(R.id.tile_vandalism)?.setOnClickListener {
+            // TODO: Otwórz ekran zgłoszenia wandalizmu
+        }
+
         return root
     }
 

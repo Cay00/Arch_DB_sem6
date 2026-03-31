@@ -21,4 +21,10 @@
     <string name="auth_error_generic">Nie udało się. Spróbuj ponownie.</string>
 
     <string name="action_logout">Wyloguj</string>
+
+    <string name="home_report_title">Zgłoś problem miejski</string>
+    <string name="tile_road_damage">Uszkodzenie nawierzchni</string>
+    <string name="tile_street_lighting">Awaria oświetlenia ulicznego</string>
+    <string name="tile_illegal_dumping">Nielegalne wysypisko/śmieci</string>
+    <string name="tile_vandalism">Akt wandalizmu</string>
 </resources>

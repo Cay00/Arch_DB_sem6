@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="tile_road_damage_bg">#FFF3E0</color>
+    <color name="tile_street_lighting_bg">#E3F2FD</color>
+    <color name="tile_illegal_dumping_bg">#E8F5E9</color>
+    <color name="tile_vandalism_bg">#FCE4EC</color>
 </resources>
