@@ -10,6 +10,10 @@ import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentAuthBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 class AuthFragment : Fragment() {
 
@@ -17,6 +21,7 @@ class AuthFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val backendBaseUrl = "http://10.0.2.2:8000"
 
     private var isRegisterMode: Boolean = false
 
@@ -86,6 +91,9 @@ class AuthFragment : Fragment() {
         task.addOnCompleteListener(requireActivity()) { result ->
             setLoading(false)
             if (result.isSuccessful) {
+                if (isRegisterMode) {
+                    syncUserWithBackend(email, password)
+                }
                 goToHome()
             } else {
                 val message = result.exception?.localizedMessage
@@ -105,6 +113,41 @@ class AuthFragment : Fragment() {
         binding.textSwitchMode.isClickable = !loading
         binding.editEmail.isEnabled = !loading
         binding.editPassword.isEnabled = !loading
+    }
+
+    private fun syncUserWithBackend(email: String, password: String) {
+        Thread {
+            runCatching {
+                val url = URL("$backendBaseUrl/users")
+                val connection = (url.openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    connectTimeout = 5000
+                    readTimeout = 5000
+                    doOutput = true
+                    setRequestProperty("Content-Type", "application/json")
+                }
+                val body = JSONObject()
+                    .put("email", email)
+                    .put("password_hash", password)
+                    .toString()
+                OutputStreamWriter(connection.outputStream, Charsets.UTF_8).use { writer ->
+                    writer.write(body)
+                }
+                val code = connection.responseCode
+                connection.disconnect()
+                if (code != HttpURLConnection.HTTP_CREATED && code != HttpURLConnection.HTTP_CONFLICT) {
+                    throw IllegalStateException("Backend registration failed with status: $code")
+                }
+            }.onFailure { error ->
+                requireActivity().runOnUiThread {
+                    Snackbar.make(
+                        binding.root,
+                        "Firebase OK, ale zapis do backendu nieudany: ${error.message}",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }.start()
     }
 
     override fun onDestroyView() {

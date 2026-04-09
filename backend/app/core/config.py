@@ -10,6 +10,7 @@ class Settings:
         "DATABASE_URL",
         "postgresql+psycopg://postgres:postgres@localhost:5432/urbanfix",
     )
+    DB_CONNECT_TIMEOUT: int = int(os.getenv("DB_CONNECT_TIMEOUT", "5"))
 
 
 settings = Settings()
