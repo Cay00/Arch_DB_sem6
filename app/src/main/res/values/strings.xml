@@ -27,4 +27,12 @@
     <string name="tile_street_lighting">Awaria oświetlenia ulicznego</string>
     <string name="tile_illegal_dumping">Nielegalne wysypisko/śmieci</string>
     <string name="tile_vandalism">Akt wandalizmu</string>
+    <string name="issue_form_title">Zgłoś uszkodzenie nawierzchni</string>
+    <string name="issue_form_category_road">Kategoria: Drogi</string>
+    <string name="issue_form_status_new">Status: NEW</string>
+    <string name="issue_hint_title">Tytuł</string>
+    <string name="issue_hint_description">Opis</string>
+    <string name="issue_hint_location">Lokalizacja</string>
+    <string name="issue_hint_user_id">ID użytkownika z backendu</string>
+    <string name="issue_button_submit">Wyślij zgłoszenie</string>
 </resources>

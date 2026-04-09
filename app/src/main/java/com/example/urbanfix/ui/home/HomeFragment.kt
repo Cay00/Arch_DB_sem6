@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentHomeBinding
 
@@ -35,7 +36,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.root.findViewById<View>(R.id.tile_road_damage)?.setOnClickListener {
-            // TODO: Otwórz ekran zgłoszenia uszkodzenia nawierzchni
+            findNavController().navigate(R.id.action_navigation_home_to_road_damage_report)
         }
         binding.root.findViewById<View>(R.id.tile_street_lighting)?.setOnClickListener {
             // TODO: Otwórz ekran zgłoszenia awarii oświetlenia
