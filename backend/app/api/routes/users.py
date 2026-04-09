@@ -32,3 +32,14 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)) -> User:
 @router.get("", response_model=list[UserResponse])
 def list_users(db: Session = Depends(get_db)) -> list[User]:
     return list(db.scalars(select(User).order_by(User.id)))
+
+
+@router.get("/by-email", response_model=UserResponse)
+def get_user_by_email(email: str, db: Session = Depends(get_db)) -> User:
+    user = db.scalar(select(User).where(User.email == email))
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        )
+    return user

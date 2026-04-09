@@ -7,16 +7,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.urbanfix.databinding.FragmentRoadDamageReportBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URLEncoder
 
 class RoadDamageReportFragment : Fragment() {
     private var _binding: FragmentRoadDamageReportBinding? = null
     private val binding get() = _binding!!
 
     private val backendBaseUrl = "http://10.0.2.2:8000"
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +32,7 @@ class RoadDamageReportFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.editIssueUserIdentity.setText(auth.currentUser?.email.orEmpty())
         binding.buttonSubmitIssue.setOnClickListener { submitIssue() }
     }
 
@@ -36,7 +40,6 @@ class RoadDamageReportFragment : Fragment() {
         val title = binding.editIssueTitle.text?.toString()?.trim().orEmpty()
         val description = binding.editIssueDescription.text?.toString()?.trim().orEmpty()
         val location = binding.editIssueLocation.text?.toString()?.trim().orEmpty()
-        val userIdText = binding.editIssueUserId.text?.toString()?.trim().orEmpty()
 
         var valid = true
         if (title.isEmpty()) {
@@ -57,19 +60,18 @@ class RoadDamageReportFragment : Fragment() {
         } else {
             binding.inputLayoutIssueLocation.error = null
         }
-        val userId = userIdText.toIntOrNull()
-        if (userId == null) {
-            binding.inputLayoutIssueUserId.error = "Podaj poprawne ID użytkownika"
-            valid = false
-        } else {
-            binding.inputLayoutIssueUserId.error = null
-        }
+        if (!valid) return
 
-        if (!valid || userId == null) return
+        val email = auth.currentUser?.email
+        if (email.isNullOrBlank()) {
+            Snackbar.make(binding.root, "Brak zalogowanego użytkownika", Snackbar.LENGTH_LONG).show()
+            return
+        }
 
         setLoading(true)
         Thread {
             runCatching {
+                val userId = fetchCurrentUserId(email)
                 val payload = JSONObject()
                     .put("title", title)
                     .put("description", description)
@@ -116,6 +118,24 @@ class RoadDamageReportFragment : Fragment() {
         }.start()
     }
 
+    private fun fetchCurrentUserId(email: String): Int {
+        val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
+        val connection = (URL("$backendBaseUrl/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
+            requestMethod = "GET"
+            connectTimeout = 5000
+            readTimeout = 5000
+        }
+        return try {
+            if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                throw IllegalStateException("Nie znaleziono użytkownika w backendzie")
+            }
+            val body = connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            JSONObject(body).getInt("id")
+        } finally {
+            connection.disconnect()
+        }
+    }
+
     private fun clearForm() {
         binding.editIssueTitle.text = null
         binding.editIssueDescription.text = null
@@ -128,7 +148,6 @@ class RoadDamageReportFragment : Fragment() {
         binding.editIssueTitle.isEnabled = !loading
         binding.editIssueDescription.isEnabled = !loading
         binding.editIssueLocation.isEnabled = !loading
-        binding.editIssueUserId.isEnabled = !loading
     }
 
     override fun onDestroyView() {

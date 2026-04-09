@@ -33,6 +33,6 @@
     <string name="issue_hint_title">Tytuł</string>
     <string name="issue_hint_description">Opis</string>
     <string name="issue_hint_location">Lokalizacja</string>
-    <string name="issue_hint_user_id">ID użytkownika z backendu</string>
+    <string name="issue_hint_user_id">User ID (konto): email zalogowanego użytkownika</string>
     <string name="issue_button_submit">Wyślij zgłoszenie</string>
 </resources>
