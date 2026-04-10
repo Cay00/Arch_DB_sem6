@@ -12,28 +12,29 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
 def register(payload: RegisterRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    existing_user = db.scalar(select(User).where(User.email == payload.email))
-    if existing_user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already used")
+    if db.scalar(select(User).where(User.email == payload.email)):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Ten e-mail jest już zarejestrowany.")
 
     user = User(
         email=payload.email,
-        full_name=payload.full_name,
         hashed_password=hash_password(payload.password),
+        display_name=payload.display_name or payload.email.split("@")[0],
     )
     db.add(user)
     db.commit()
     db.refresh(user)
-
     return TokenResponse(access_token=create_access_token(str(user.id)))
 
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.scalar(select(User).where(User.email == payload.email))
-    if not user or not verify_password(payload.password, user.hashed_password):
+    if user is None or not user.hashed_password:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Błędny e-mail lub hasło (konto tylko-Firebase nie loguje się tutaj).",
         )
+    if not verify_password(payload.password, user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Błędny e-mail lub hasło.")
 
     return TokenResponse(access_token=create_access_token(str(user.id)))

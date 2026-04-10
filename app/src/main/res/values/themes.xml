@@ -11,6 +11,10 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Większa domyślna typografia (M2) -->
+        <item name="textAppearanceBody1">@style/TextAppearance.Urbanfix.Body</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.Urbanfix.BodySecondary</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.Urbanfix.Subtitle</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.Urbanfix.Label</item>
     </style>
 </resources>

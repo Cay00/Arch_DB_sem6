@@ -7,13 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
+import com.example.urbanfix.data.BackendApi
 import com.example.urbanfix.databinding.FragmentAuthBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import org.json.JSONObject
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
 
 class AuthFragment : Fragment() {
 
@@ -21,7 +18,6 @@ class AuthFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val backendBaseUrl = "http://10.0.2.2:8000"
 
     private var isRegisterMode: Boolean = false
 
@@ -89,17 +85,16 @@ class AuthFragment : Fragment() {
                 auth.signInWithEmailAndPassword(email, password)
             }
         task.addOnCompleteListener(requireActivity()) { result ->
-            setLoading(false)
-            if (result.isSuccessful) {
-                if (isRegisterMode) {
-                    syncUserWithBackend(email, password)
-                }
-                goToHome()
-            } else {
+            if (!result.isSuccessful) {
+                setLoading(false)
                 val message = result.exception?.localizedMessage
                     ?: getString(R.string.auth_error_generic)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                snackbar(message)
+                return@addOnCompleteListener
             }
+            // Zawsze zsynchronizuj z backendem: po rejestracji i po logowaniu.
+            // POST /users → 201 (nowy) lub 409 (już w bazie) — naprawia brak rekordu gdy wcześniej backend nie działał.
+            pushUserToBackendThenNavigate(email, password)
         }
     }
 
@@ -108,6 +103,7 @@ class AuthFragment : Fragment() {
     }
 
     private fun setLoading(loading: Boolean) {
+        if (_binding == null) return
         binding.progressAuth.visibility = if (loading) View.VISIBLE else View.GONE
         binding.buttonSubmit.isEnabled = !loading
         binding.textSwitchMode.isClickable = !loading
@@ -115,39 +111,34 @@ class AuthFragment : Fragment() {
         binding.editPassword.isEnabled = !loading
     }
 
-    private fun syncUserWithBackend(email: String, password: String) {
+    private fun pushUserToBackendThenNavigate(email: String, password: String) {
+        val baseUrl = requireContext().getString(R.string.backend_base_url)
+        val firebaseUid = auth.currentUser?.uid
         Thread {
-            runCatching {
-                val url = URL("$backendBaseUrl/users")
-                val connection = (url.openConnection() as HttpURLConnection).apply {
-                    requestMethod = "POST"
-                    connectTimeout = 5000
-                    readTimeout = 5000
-                    doOutput = true
-                    setRequestProperty("Content-Type", "application/json")
-                }
-                val body = JSONObject()
-                    .put("email", email)
-                    .put("password_hash", password)
-                    .toString()
-                OutputStreamWriter(connection.outputStream, Charsets.UTF_8).use { writer ->
-                    writer.write(body)
-                }
-                val code = connection.responseCode
-                connection.disconnect()
-                if (code != HttpURLConnection.HTTP_CREATED && code != HttpURLConnection.HTTP_CONFLICT) {
-                    throw IllegalStateException("Backend registration failed with status: $code")
-                }
-            }.onFailure { error ->
-                requireActivity().runOnUiThread {
-                    Snackbar.make(
-                        binding.root,
-                        "Firebase OK, ale zapis do backendu nieudany: ${error.message}",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
+            val syncResult = runCatching {
+                BackendApi.registerUser(baseUrl, email, password, firebaseUid)
+            }
+            requireActivity().runOnUiThread {
+                setLoading(false)
+                if (!isAdded) return@runOnUiThread
+                syncResult.fold(
+                    onSuccess = { goToHome() },
+                    onFailure = { error ->
+                        snackbar(
+                            getString(
+                                R.string.auth_backend_sync_failed,
+                                error.message ?: error.toString()
+                            )
+                        )
+                    },
+                )
             }
         }.start()
+    }
+
+    private fun snackbar(message: String) {
+        val anchor = view ?: activity?.findViewById(android.R.id.content) ?: return
+        Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {

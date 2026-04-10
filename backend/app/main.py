@@ -1,7 +1,18 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-from app.api.v1.api import api_router
+from app.api.routes import api_router
 from app.core.config import settings
 
-app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
-app.include_router(api_router, prefix="/api/v1")
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    from app.db.init_db import init_db
+
+    init_db()
+    yield
+
+
+app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG, lifespan=lifespan)
+app.include_router(api_router)

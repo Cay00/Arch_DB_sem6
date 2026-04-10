@@ -71,12 +71,21 @@ Uwaga:
 - aplikacja komunikuje sie z backendem pod `http://10.0.2.2:8000`,
 - backend musi byc uruchomiony lokalnie przed testami rejestracji i zglaszania.
 
-## API - najwazniejsze endpointy
+## API (FastAPI — wszystko w korzeniu `http://...:8000/`)
 
-- `GET /health` - status API.
-- `POST /users` - zapis usera do backendu.
-- `GET /users` - lista userow.
-- `GET /users/by-email?email=...` - user po emailu (uzywane przez aplikacje).
-- `POST /issues` - utworzenie zgloszenia.
-- `GET /issues` - lista zgloszen.
-- `GET /issues?user_id=<id>` - lista zgloszen konkretnego usera.
+### Android (Firebase + Postgres)
+
+- `POST /users` — sync po Firebase: `email`, `password_hash` (czyste haslo → bcrypt na serwerze), `firebase_uid` (z Firebase User.uid). Odpowiedz 201 (nowy) lub 200 (aktualizacja).
+- `GET /users/by-email?email=...` — m.in. `id` do `user_id` w zgloszeniu.
+- `POST /issues`, `GET /issues?user_id=<id>` — zgloszenia.
+
+### Rejestracja / logowanie tylko w backendzie (JWT)
+
+- `POST /auth/register` — `email`, `password`, `display_name` (opcjonalnie).
+- `POST /auth/login` — `email`, `password` (dziala tylko jesli w bazie jest `hashed_password`, np. po `/auth/register` lub po sync z haslem).
+
+### Inne
+
+- `GET /health`, `GET /users`
+
+Przy pierwszym starcie backend robi `create_all`. Po **zmianie modeli** usuń plik `.db` (SQLite) albo odtworz tabele w Postgresie.

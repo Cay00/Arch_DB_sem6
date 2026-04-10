@@ -1,25 +1,37 @@
-# UrbanFix Backend (FastAPI)
+# UrbanFix — backend (FastAPI + PostgreSQL)
 
-Backend API for reporting city issues with JWT authentication and PostgreSQL storage.
+Prosty API: użytkownicy (Firebase + opcjonalnie hasło w Postgres), JWT z `/auth`, zgłoszenia `issues`.
 
-## Features
-- FastAPI + SQLAlchemy 2.x
-- PostgreSQL (psycopg3 driver)
-- JWT authentication
-- Password hashing with bcrypt
+## Uruchomienie
 
-## Setup
-1. Create virtualenv and install dependencies:
-   - `python -m venv .venv`
-   - Windows PowerShell: `.venv\Scripts\Activate.ps1`
-   - `pip install -r requirements.txt`
-2. Copy `.env.example` to `.env` and update secrets.
-3. Run API:
-   - `uvicorn app.main:app --reload`
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+# ustaw DATABASE_URL (Postgres) i JWT_SECRET_KEY
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-## Endpoints
-- `GET /api/v1/health`
-- `POST /api/v1/auth/register`
-- `POST /api/v1/auth/login`
-- `POST /api/v1/reports` (auth required)
-- `GET /api/v1/reports`
+Przy starcie wywoływane jest `create_all` — **przy zmianie schematu** usuń bazę / zrób migrację ręcznie.
+
+## Endpointy (wszystko w korzeniu, bez `/api/v1`)
+
+| Metoda | Ścieżka | Opis |
+|--------|---------|------|
+| GET | `/health` | OK |
+| POST | `/auth/register` | Konto tylko w Postgres + JWT (`email`, `password`, `display_name?`) |
+| POST | `/auth/login` | JWT (`email`, `password`) — wymaga `hashed_password` w bazie |
+| POST | `/users` | Sync z aplikacji Firebase: `email`, `firebase_uid?`, `password_hash?` (plain → bcrypt). 201 / 200 / 409 |
+| GET | `/users` | Lista |
+| GET | `/users/by-email?email=` | Po `id` pod zgłoszenia |
+| POST | `/issues` | Zgłoszenie (`user_id`, `title`, `description`, `category`, `location`, `status?`) |
+| GET | `/issues` | Lista; `?user_id=` filtr |
+
+OpenAPI: `/docs`
+
+## Model
+
+- **users** — `email`, `firebase_uid` (unikalne, opcjonalne), `hashed_password` (opcjonalne), `display_name`, `created_at`
+- **issues** — powiązane z `users.id`

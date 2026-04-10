@@ -9,34 +9,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/issue_form_title"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/TextAppearance.Urbanfix.Title"
+            android:textSize="24sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:text="@string/issue_form_category_road"
-            android:textSize="14sp" />
+            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@string/issue_form_status_new"
-            android:textSize="14sp" />
+            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueUserIdentity"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="@string/issue_hint_user_id">
+            android:layout_marginTop="14dp"
+            android:hint="@string/issue_hint_user_id"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editIssueUserIdentity"
@@ -44,27 +47,35 @@
                 android:layout_height="wrap_content"
                 android:enabled="false"
                 android:focusable="false"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:minHeight="52dp"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueTitle"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editIssueTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/issue_hint_title" />
+                android:hint="@string/issue_hint_title"
+                android:minHeight="52dp"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueDescription"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="14dp"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editIssueDescription"
@@ -73,28 +84,35 @@
                 android:gravity="top"
                 android:hint="@string/issue_hint_description"
                 android:inputType="textMultiLine"
-                android:minLines="4" />
+                android:minLines="5"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueLocation"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="14dp"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editIssueLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/issue_hint_location" />
+                android:hint="@string/issue_hint_location"
+                android:minHeight="52dp"
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSubmitIssue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
+            android:minHeight="56dp"
             android:text="@string/issue_button_submit"
+            android:textSize="18sp"
             app:cornerRadius="12dp" />
 
         <ProgressBar
@@ -102,7 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
             android:visibility="gone" />
     </LinearLayout>
 </ScrollView>
