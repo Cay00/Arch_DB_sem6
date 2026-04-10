@@ -1,16 +1,18 @@
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings:
-    """Simple application settings loaded from environment."""
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
 
-    APP_NAME: str = os.getenv("APP_NAME", "UrbanFix API")
-    APP_VERSION: str = os.getenv("APP_VERSION", "0.1.0")
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL",
-        "postgresql+psycopg://postgres:postgres@localhost:5432/urbanfix",
-    )
-    DB_CONNECT_TIMEOUT: int = int(os.getenv("DB_CONNECT_TIMEOUT", "5"))
+    APP_NAME: str = "UrbanFix API"
+    ENV: str = "production"
+    DEBUG: bool = False
+
+    DATABASE_URL: str
+
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
 
 settings = Settings()

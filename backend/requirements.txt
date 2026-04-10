@@ -1,5 +1,9 @@
 fastapi
 uvicorn[standard]
-sqlalchemy
+sqlalchemy>=2.0
 psycopg[binary]
-email-validator
+python-jose[cryptography]
+passlib[bcrypt]
+pydantic-settings
+python-multipart
+alembic
