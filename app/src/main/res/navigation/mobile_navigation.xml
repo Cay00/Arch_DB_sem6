@@ -22,7 +22,17 @@
         android:id="@+id/navigation_home"
         android:name="com.example.urbanfix.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_navigation_home_to_road_damage_report"
+            app:destination="@id/navigation_road_damage_report" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_road_damage_report"
+        android:name="com.example.urbanfix.ui.issues.RoadDamageReportFragment"
+        android:label="@string/issue_form_title"
+        tools:layout="@layout/fragment_road_damage_report" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
