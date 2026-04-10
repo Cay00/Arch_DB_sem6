@@ -5,7 +5,7 @@
     <string name="app_name">urbanfix</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Zgłoszenia</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">Mój profil</string>
 
     <string name="title_auth">Konto</string>
     <string name="auth_heading_login">Logowanie</string>
@@ -42,4 +42,28 @@
     <string name="my_issues_title">Twoje zgłoszenia</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>
     <string name="my_issues_load_error">Nie udało się pobrać zgłoszeń.</string>
+
+    <string name="profile_intro">Twoje konto, podsumowanie zgłoszeń i ustawienia.</string>
+    <string name="profile_section_account">Konto</string>
+    <string name="profile_email_label">E-mail</string>
+    <string name="profile_firebase_uid_label">Identyfikator Firebase</string>
+    <string name="profile_backend_id_label">ID w backendzie (Postgres)</string>
+    <string name="profile_section_issues">Zgłoszenia</string>
+    <string name="profile_open_issues_tab">Otwórz zakładkę Zgłoszenia</string>
+    <string name="profile_section_notifications">Powiadomienia</string>
+    <string name="profile_notifications_placeholder">Brak powiadomień. W przyszłości pojawią się tu statusy zgłoszeń.</string>
+    <string name="profile_section_settings">Ustawienia</string>
+    <string name="profile_settings_placeholder">Więcej opcji w kolejnej wersji (język, powiadomienia push itd.).</string>
+    <string name="profile_not_signed_in">—</string>
+    <string name="profile_dash">—</string>
+    <string name="profile_backend_error">nie udało się pobrać</string>
+    <string name="profile_issues_need_login">Zaloguj się, aby zobaczyć zgłoszenia.</string>
+    <string name="profile_issues_load_error">Nie udało się pobrać liczby zgłoszeń.</string>
+
+    <plurals name="profile_issues_count">
+        <item quantity="one">%d zgłoszenie w backendzie.</item>
+        <item quantity="few">%d zgłoszenia w backendzie.</item>
+        <item quantity="many">%d zgłoszeń w backendzie.</item>
+        <item quantity="other">%d zgłoszeń w backendzie.</item>
+    </plurals>
 </resources>

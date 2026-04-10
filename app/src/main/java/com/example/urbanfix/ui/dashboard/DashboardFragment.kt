@@ -143,8 +143,8 @@ class DashboardFragment : Fragment() {
                 append("\n")
                 append(issue.optString("description"))
             }
-            textSize = 15f
-            setPadding(4)
+            textSize = 18f
+            setPadding(8)
         }
         card.addView(text)
         return card
