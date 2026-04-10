@@ -34,5 +34,9 @@ def create_issue(payload: IssueCreate, db: Session = Depends(get_db)) -> Issue:
 
 
 @router.get("", response_model=list[IssueResponse])
-def list_issues(db: Session = Depends(get_db)) -> list[Issue]:
-    return list(db.scalars(select(Issue).order_by(Issue.id.desc())))
+def list_issues(user_id: int | None = None, db: Session = Depends(get_db)) -> list[Issue]:
+    stmt = select(Issue)
+    if user_id is not None:
+        stmt = stmt.where(Issue.user_id == user_id)
+    stmt = stmt.order_by(Issue.id.desc())
+    return list(db.scalars(stmt))
