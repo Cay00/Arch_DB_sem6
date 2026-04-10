@@ -1,5 +1,10 @@
 # UrbanFix
 
+# Update Zadanie 3
+- utworzono bazę PostgreSQL w któej przechowywane są dane kont
+- zgłaszanie usterek działa, każde zgłoszenie przypisywane jest do zalogowanego użytkownika, dostępne do podglądu przez webhooki
+
+
 Projekt do zglaszania usterek miejskich:
 - aplikacja Android (Kotlin + Firebase Auth),
 - backend FastAPI (Python 3.11),
