@@ -22,7 +22,7 @@ class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val backendBaseUrl = "http://10.0.2.2:8000"
+    private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +68,7 @@ class DashboardFragment : Fragment() {
 
     private fun fetchCurrentUserId(email: String): Int {
         val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
-        val connection = (URL("$backendBaseUrl/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
+        val connection = (URL("${backendBaseUrl()}/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
             connectTimeout = 5000
             readTimeout = 5000
@@ -85,7 +85,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun fetchIssues(userId: Int): JSONArray {
-        val connection = (URL("$backendBaseUrl/issues?user_id=$userId").openConnection() as HttpURLConnection).apply {
+        val connection = (URL("${backendBaseUrl()}/issues?user_id=$userId").openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
             connectTimeout = 5000
             readTimeout = 5000

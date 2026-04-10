@@ -1,4 +1,7 @@
 <resources>
+    <!-- Emulator: 10.0.2.2 = komputer z Android Studio. Telefon fizyczny: np. http://192.168.0.10:8000 (wspólne Wi‑Fi). -->
+    <string name="backend_base_url" translatable="false">http://10.0.2.2:8000</string>
+
     <string name="app_name">urbanfix</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Zgłoszenia</string>
@@ -19,6 +22,7 @@
     <string name="auth_error_password_required">Podaj hasło</string>
     <string name="auth_error_password_short">Hasło musi mieć co najmniej 6 znaków</string>
     <string name="auth_error_generic">Nie udało się. Spróbuj ponownie.</string>
+    <string name="auth_backend_sync_failed">Firebase OK, ale zapis do backendu nieudany: %1$s</string>
 
     <string name="action_logout">Wyloguj</string>
 

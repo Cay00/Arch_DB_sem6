@@ -1,5 +1,7 @@
-from app.db.session import Base
-from app.models.report import Report
-from app.models.user import User
+"""Importy modeli dla metadata.create_all (init_db)."""
 
-__all__ = ["Base", "User", "Report"]
+from app.db.session import Base
+from app.models.issue import Issue  # noqa: F401
+from app.models.user import User  # noqa: F401
+
+__all__ = ["Base", "User", "Issue"]

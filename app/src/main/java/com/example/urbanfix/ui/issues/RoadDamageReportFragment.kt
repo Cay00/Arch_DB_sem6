@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentRoadDamageReportBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +19,7 @@ class RoadDamageReportFragment : Fragment() {
     private var _binding: FragmentRoadDamageReportBinding? = null
     private val binding get() = _binding!!
 
-    private val backendBaseUrl = "http://10.0.2.2:8000"
+    private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreateView(
@@ -81,7 +82,7 @@ class RoadDamageReportFragment : Fragment() {
                     .put("user_id", userId)
                     .toString()
 
-                val connection = (URL("$backendBaseUrl/issues").openConnection() as HttpURLConnection).apply {
+                val connection = (URL("${backendBaseUrl()}/issues").openConnection() as HttpURLConnection).apply {
                     requestMethod = "POST"
                     connectTimeout = 5000
                     readTimeout = 5000
@@ -120,7 +121,7 @@ class RoadDamageReportFragment : Fragment() {
 
     private fun fetchCurrentUserId(email: String): Int {
         val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
-        val connection = (URL("$backendBaseUrl/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
+        val connection = (URL("${backendBaseUrl()}/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
             connectTimeout = 5000
             readTimeout = 5000

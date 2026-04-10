@@ -1,29 +1,25 @@
 from datetime import datetime
-from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
-
-IssueCategory = Literal["Drogi", "Zieleń", "Oświetlenie"]
-IssueStatus = Literal["NEW", "IN_PROGRESS", "RESOLVED", "REJECTED"]
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class IssueCreate(BaseModel):
-    title: str
-    description: str
-    category: IssueCategory
-    location: str
+    title: str = Field(min_length=1, max_length=255)
+    description: str = Field(min_length=1, max_length=4000)
+    category: str = Field(min_length=1, max_length=50)
+    location: str = Field(min_length=1, max_length=255)
     user_id: int
-    status: IssueStatus = "NEW"
+    status: str = Field(default="NEW", max_length=20)
 
 
-class IssueResponse(BaseModel):
+class IssuePublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     title: str
     description: str
-    category: IssueCategory
-    status: IssueStatus
+    category: str
+    status: str
     location: str
     user_id: int
     created_at: datetime
