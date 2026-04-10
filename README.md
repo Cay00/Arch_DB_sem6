@@ -76,18 +76,18 @@ Uwaga:
 - aplikacja komunikuje sie z backendem pod `http://10.0.2.2:8000`,
 - backend musi byc uruchomiony lokalnie przed testami rejestracji i zglaszania.
 
-## API (FastAPI — wszystko w korzeniu `http://...:8000/`)
+## API (FastAPI — `http://...:8000/`)
 
 ### Android (Firebase + Postgres)
 
-- `POST /users` — sync po Firebase: `email`, `password_hash` (czyste haslo → bcrypt na serwerze), `firebase_uid` (z Firebase User.uid). Odpowiedz 201 (nowy) lub 200 (aktualizacja).
+- `POST /users` — sync po Firebase: `email`, `password_hash`, `firebase_uid` (z Firebase User.uid). Odpowiedz 201 (nowy) lub 200 (aktualizacja).
 - `GET /users/by-email?email=...` — m.in. `id` do `user_id` w zgloszeniu.
 - `POST /issues`, `GET /issues?user_id=<id>` — zgloszenia.
 
 ### Rejestracja / logowanie tylko w backendzie (JWT)
 
-- `POST /auth/register` — `email`, `password`, `display_name` (opcjonalnie).
-- `POST /auth/login` — `email`, `password` (dziala tylko jesli w bazie jest `hashed_password`, np. po `/auth/register` lub po sync z haslem).
+- `POST /auth/register` — `email`, `password`, `display_name`.
+- `POST /auth/login` — `email`, `password`.
 
 ### Inne
 
