@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+    #: Jeśli ustawione, `GET /issues?issues_list_secret=<wartość>` zwraca wszystkie zgłoszenia (integracje, webhooki).
+    #: W produkcji bez tego nadal wymagane są `user_id` albo `official_email`.
+    ISSUES_LIST_SECRET: str | None = Field(default=None)
+
     @model_validator(mode="after")
     def reject_weak_secrets_in_production(self) -> Self:
         if self.ENV.lower() in ("production", "prod") and self.JWT_SECRET_KEY in _WEAK_JWT_SECRETS:

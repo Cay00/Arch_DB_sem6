@@ -52,8 +52,23 @@
     <string name="issue_card_status">Status: %1$s</string>
     <string name="issue_submit_success_with_status">Zgłoszenie zapisane. Status: Zgłoszone</string>
     <string name="my_issues_title">Twoje zgłoszenia</string>
+    <string name="official_issues_title">Wszystkie zgłoszenia</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>
     <string name="my_issues_load_error">Nie udało się pobrać zgłoszeń.</string>
+    <string name="issue_detail_title">Szczegóły zgłoszenia</string>
+    <string name="issue_detail_label_id">ID</string>
+    <string name="issue_detail_label_title">Tytuł</string>
+    <string name="issue_detail_label_description">Opis</string>
+    <string name="issue_detail_label_category">Kategoria</string>
+    <string name="issue_detail_label_status">Status</string>
+    <string name="issue_detail_label_location">Lokalizacja</string>
+    <string name="issue_detail_label_created">Data utworzenia</string>
+    <string name="issue_detail_label_user_id">ID użytkownika</string>
+    <string name="issue_detail_status_hint">Nowy status</string>
+    <string name="issue_detail_save_status">Zapisz status</string>
+    <string name="issue_detail_load_error">Nie udało się wczytać zgłoszenia.</string>
+    <string name="issue_detail_status_saved">Status zaktualizowany.</string>
+    <string name="issue_detail_status_save_error">Nie udało się zapisać statusu.</string>
 
     <string name="profile_intro">Twoje konto, podsumowanie zgłoszeń i ustawienia.</string>
     <string name="profile_section_account">Konto</string>

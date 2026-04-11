@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="issue_status_values">
+        <item>Zgłoszone</item>
+        <item>Rozpatrywane</item>
+        <item>Zaakceptowane</item>
+        <item>Odrzucone</item>
+    </string-array>
+</resources>

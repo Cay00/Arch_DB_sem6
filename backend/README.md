@@ -27,7 +27,7 @@ Przy starcie wywoływane jest `create_all` — **przy zmianie schematu** usuń b
 | GET | `/users` | Lista |
 | GET | `/users/by-email?email=` | Po `id` pod zgłoszenia |
 | POST | `/issues` | Zgłoszenie (`user_id`, `title`, `description`, `category`, `location`, `status?`) |
-| GET | `/issues` | Lista; `?user_id=` filtr |
+| GET | `/issues` | Lista: `?user_id=` (mieszkaniec), `?official_email=` (Official — wszystkie), opcjonalnie `?issues_list_secret=` gdy w `.env` jest `ISSUES_LIST_SECRET` (webhook / integracje). Przy domyślnym `ENV=development` samo `GET /issues` zwraca pełną listę (wygoda `/docs`); przy `ENV=production` bez parametrów — 422. |
 
 OpenAPI: `/docs`
 

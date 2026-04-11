@@ -6,4 +6,17 @@
     <dimen name="auth_padding_top_base">24dp</dimen>
     <dimen name="auth_padding_horizontal">24dp</dimen>
     <dimen name="auth_padding_bottom">32dp</dimen>
+    <!-- Wspólne z kafelkami zgłoszeń na Home (Widget.Urbanfix.HomeIssueTile) -->
+    <dimen name="home_issue_tile_corner_radius">20dp</dimen>
+    <dimen name="home_issue_tile_elevation">1dp</dimen>
+    <dimen name="home_issue_tile_stroke_width">1dp</dimen>
+    <!-- Karty na liście zgłoszeń — treść jak padding wewnątrz kafelków Home -->
+    <dimen name="issue_list_card_content_padding_horizontal">18dp</dimen>
+    <dimen name="issue_list_card_content_padding_top">18dp</dimen>
+    <dimen name="issue_list_card_content_padding_bottom">18dp</dimen>
+    <dimen name="issue_list_card_gap_status_to_title">10dp</dimen>
+    <dimen name="issue_list_card_gap_title_to_body">12dp</dimen>
+    <dimen name="issue_list_card_margin_bottom">10dp</dimen>
+    <dimen name="issue_list_container_padding_bottom">8dp</dimen>
+    <dimen name="dashboard_content_top_spacing">24dp</dimen>
 </resources>

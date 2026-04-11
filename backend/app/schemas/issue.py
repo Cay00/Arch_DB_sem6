@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+
+from app.core.issue_status import ALL_STATUSES
 
 
 class IssueCreate(BaseModel):
@@ -26,3 +28,17 @@ class IssuePublic(BaseModel):
     location: str
     user_id: int
     created_at: datetime
+
+
+class IssueStatusUpdate(BaseModel):
+    """Zmiana statusu — wyłącznie przez konto Official (weryfikacja po actor_email)."""
+
+    status: str = Field(max_length=32)
+    actor_email: EmailStr
+
+    @field_validator("status")
+    @classmethod
+    def status_must_be_allowed(cls, v: str) -> str:
+        if v not in ALL_STATUSES:
+            raise ValueError(f"status musi być jednym z: {', '.join(sorted(ALL_STATUSES))}")
+        return v

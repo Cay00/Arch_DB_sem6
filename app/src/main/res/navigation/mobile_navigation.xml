@@ -38,7 +38,23 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.example.urbanfix.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+
+        <action
+            android:id="@+id/action_navigation_dashboard_to_navigation_issue_detail"
+            app:destination="@id/navigation_issue_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_issue_detail"
+        android:name="com.example.urbanfix.ui.issues.IssueDetailFragment"
+        android:label="@string/issue_detail_title"
+        tools:layout="@layout/fragment_issue_detail">
+
+        <argument
+            android:name="issueId"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
