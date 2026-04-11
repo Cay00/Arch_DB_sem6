@@ -10,215 +10,242 @@
         android:id="@+id/text_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="8dp"
         android:textAlignment="center"
         android:text="@string/home_report_title"
         android:textAppearance="@style/TextAppearance.Urbanfix.Title"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/report_grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginVertical="8dp"
-        app:layout_constraintTop_toBottomOf="@id/text_home"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/text_home">
 
-        <!-- Tile 1 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tile_road_damage"
+            style="@style/Widget.Urbanfix.HomeIssueTile"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/tile_road_damage"
+            android:layout_margin="6dp"
             android:clickable="true"
+            android:contentDescription="@string/tile_road_damage"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp"
-            app:cardBackgroundColor="@color/tile_road_damage_bg"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tile_street_lighting"
             app:layout_constraintBottom_toTopOf="@id/tile_illegal_dumping"
-            app:layout_constraintDimensionRatio="1:1">
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/tile_street_lighting"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="20dp">
-                <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:importantForAccessibility="no"
-                    android:contentDescription="@null"
-                    app:tint="?attr/colorPrimary"
-                    android:src="@android:drawable/ic_menu_report_image" />
+                android:paddingHorizontal="14dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="14dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_home_tile_icon">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_tile_road_damage"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="3"
                     android:text="@string/tile_road_damage"
                     android:textAlignment="center"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:maxLines="3"
+                    android:textSize="15sp"
                     tools:text="Uszkodzenie nawierzchni" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Tile 2 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tile_street_lighting"
+            style="@style/Widget.Urbanfix.HomeIssueTile"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/tile_street_lighting"
+            android:layout_margin="6dp"
             android:clickable="true"
+            android:contentDescription="@string/tile_street_lighting"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp"
-            app:cardBackgroundColor="@color/tile_street_lighting_bg"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tile_road_damage"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/tile_vandalism"
-            app:layout_constraintDimensionRatio="1:1">
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tile_road_damage"
+            app:layout_constraintTop_toTopOf="parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="20dp">
-                <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:importantForAccessibility="no"
-                    android:contentDescription="@null"
-                    app:tint="?attr/colorPrimary"
-                    android:src="@android:drawable/ic_menu_gallery" />
+                android:paddingHorizontal="14dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="14dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_home_tile_icon">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_tile_street_lighting"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="3"
                     android:text="@string/tile_street_lighting"
                     android:textAlignment="center"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:maxLines="3"
+                    android:textSize="15sp"
                     tools:text="Awaria oświetlenia" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Tile 3 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tile_illegal_dumping"
+            style="@style/Widget.Urbanfix.HomeIssueTile"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/tile_illegal_dumping"
+            android:layout_margin="6dp"
             android:clickable="true"
+            android:contentDescription="@string/tile_illegal_dumping"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp"
-            app:cardBackgroundColor="@color/tile_illegal_dumping_bg"
-            app:layout_constraintTop_toBottomOf="@id/tile_road_damage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tile_vandalism"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1">
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/tile_vandalism"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tile_road_damage">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="20dp">
-                <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:importantForAccessibility="no"
-                    android:contentDescription="@null"
-                    app:tint="?attr/colorPrimary"
-                    android:src="@android:drawable/ic_menu_delete" />
+                android:paddingHorizontal="14dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="14dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_home_tile_icon">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_tile_illegal_dumping"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="3"
                     android:text="@string/tile_illegal_dumping"
                     android:textAlignment="center"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:maxLines="3"
+                    android:textSize="15sp"
                     tools:text="Nielegalne wysypisko" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Tile 4 -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tile_vandalism"
+            style="@style/Widget.Urbanfix.HomeIssueTile"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/tile_vandalism"
+            android:layout_margin="6dp"
             android:clickable="true"
+            android:contentDescription="@string/tile_vandalism"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp"
-            app:cardBackgroundColor="@color/tile_vandalism_bg"
-            app:layout_constraintTop_toBottomOf="@id/tile_street_lighting"
-            app:layout_constraintStart_toEndOf="@id/tile_illegal_dumping"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1">
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tile_illegal_dumping"
+            app:layout_constraintTop_toBottomOf="@id/tile_street_lighting">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="20dp">
-                <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:importantForAccessibility="no"
-                    android:contentDescription="@null"
-                    app:tint="?attr/colorPrimary"
-                    android:src="@android:drawable/ic_menu_edit" />
+                android:paddingHorizontal="14dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="14dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_home_tile_icon">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        app:srcCompat="@drawable/ic_tile_vandalism"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="3"
                     android:text="@string/tile_vandalism"
                     android:textAlignment="center"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:maxLines="3"
+                    android:textSize="15sp"
                     tools:text="Wandalizm" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

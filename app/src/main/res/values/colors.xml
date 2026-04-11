@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- Główna paleta (nazwy zachowane dla kompatybilności z themes): pomarańcz budowlany / ostrzegawczy bursztyn -->
+    <color name="purple_200">#FFFFB74D</color>
+    <color name="purple_500">#FFE65100</color>
+    <color name="purple_700">#FFBF360C</color>
+    <!-- Akcent drugorzędny: „stal” i głębszy bursztyn -->
+    <color name="teal_200">#FFFFCA28</color>
+    <color name="teal_700">#FF5D4037</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="tile_road_damage_bg">#FFF3E0</color>
-    <color name="tile_street_lighting_bg">#E3F2FD</color>
-    <color name="tile_illegal_dumping_bg">#E8F5E9</color>
-    <color name="tile_vandalism_bg">#FCE4EC</color>
+    <color name="bottom_nav_ripple_fill">#26E65100</color>
+    <!-- Kafelki home: obrys i tło ikony -->
+    <color name="home_tile_stroke">#14000000</color>
+    <color name="home_tile_icon_scrim">#18E65100</color>
 </resources>
