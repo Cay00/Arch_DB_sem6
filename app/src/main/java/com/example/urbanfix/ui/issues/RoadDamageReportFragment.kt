@@ -3,8 +3,10 @@ package com.example.urbanfix.ui.issues
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +22,9 @@ import androidx.fragment.app.Fragment
 import com.example.urbanfix.R
 import com.example.urbanfix.data.BackendUserJson
 import com.example.urbanfix.databinding.FragmentRoadDamageReportBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONObject
@@ -45,8 +50,12 @@ class RoadDamageReportFragment : Fragment() {
     private var photoUri: Uri? = null
     private var photoFile: File? = null
 
-    private val geocoder by lazy { Geocoder(requireContext(), Locale("pl", "PL")) }
+    private val geocoder by lazy { Geocoder(requireContext(), Locale.forLanguageTag("pl-PL")) }
     private lateinit var addressAdapter: NoFilterAdapter
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
 
     private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -65,14 +74,20 @@ class RoadDamageReportFragment : Fragment() {
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
+    private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            startCamera()
-        } else {
-            Snackbar.make(binding.root, "Kamera jest wymagana do zrobienia zdjecia", Snackbar.LENGTH_LONG).show()
-        }
+        if (isGranted) startCamera()
+        else showSnackbar("Kamera jest wymagana do zrobienia zdjecia")
+    }
+
+    private val requestLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                      permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) getCurrentLocation()
+        else showSnackbar("Lokalizacja jest wymagana do zczytania adresu")
     }
 
     override fun onCreateView(
@@ -89,7 +104,94 @@ class RoadDamageReportFragment : Fragment() {
         setupUserInformation()
         setupPhotoButtons()
         setupLocationAutocomplete()
+        setupLocationButton()
         binding.buttonSubmitIssue.setOnClickListener { submitIssue() }
+    }
+
+    private fun setupLocationButton() {
+        binding.inputLayoutIssueLocation.setEndIconOnClickListener {
+            checkLocationPermissionAndFetch()
+        }
+    }
+
+    private fun checkLocationPermissionAndFetch() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation()
+        } else {
+            requestLocationPermissionLauncher.launch(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ))
+        }
+    }
+
+    private fun getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return
+
+        binding.progressIssue.visibility = View.VISIBLE
+        
+        // Proba pobrania biezacej lokalizacji
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    reverseGeocode(location.latitude, location.longitude)
+                } else {
+                    // Jesli biezaca lokalizacja jest null, probujemy pobrac ostatnia znana (szybsze)
+                    fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
+                        if (lastLoc != null) {
+                            reverseGeocode(lastLoc.latitude, lastLoc.longitude)
+                        } else {
+                            binding.progressIssue.visibility = View.GONE
+                            showSnackbar("Nie udalo sie pobrac lokalizacji GPS. Sprobuj ponownie.")
+                        }
+                    }.addOnFailureListener {
+                        binding.progressIssue.visibility = View.GONE
+                        showSnackbar("Blad lokalizacji")
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                binding.progressIssue.visibility = View.GONE
+                showSnackbar("Blad GPS: ${e.message}")
+            }
+    }
+
+    private fun reverseGeocode(lat: Double, lng: Double) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocation(lat, lng, 1) { addresses ->
+                requireActivity().runOnUiThread {
+                    updateLocationFromAddress(addresses.firstOrNull())
+                }
+            }
+        } else {
+            Thread {
+                try {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocation(lat, lng, 1)
+                    requireActivity().runOnUiThread {
+                        updateLocationFromAddress(addresses?.firstOrNull())
+                    }
+                } catch (e: Exception) {
+                    requireActivity().runOnUiThread {
+                        binding.progressIssue.visibility = View.GONE
+                        showSnackbar("Blad geokodowania")
+                    }
+                }
+            }.start()
+        }
+    }
+
+    private fun updateLocationFromAddress(address: Address?) {
+        binding.progressIssue.visibility = View.GONE
+        val addressStr = address?.getAddressLine(0)
+        if (addressStr != null) {
+            // setText(text, false) informuje TextInputLayout, ze pole nie jest puste
+            // co powoduje poprawne "podniesienie" napisu Lokalizacja do gory.
+            binding.editIssueLocation.setText(addressStr, false)
+            binding.editIssueLocation.dismissDropDown()
+        } else {
+            showSnackbar("Nie znaleziono adresu dla tej pozycji")
+        }
     }
 
     private fun setupUserInformation() {
@@ -139,25 +241,34 @@ class RoadDamageReportFragment : Fragment() {
     }
 
     private fun searchAddresses(query: String) {
-        Thread {
-            try {
-                // Geocoder szuka pasujacych adresow
-                val addresses = geocoder.getFromLocationName(query, 10)
-                val addressStrings = addresses?.mapNotNull { address ->
-                    address.getAddressLine(0)
-                }?.distinct() ?: emptyList()
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocationName(query, 10) { addresses ->
                 requireActivity().runOnUiThread {
-                    if (_binding == null) return@runOnUiThread
-                    addressAdapter.updateData(addressStrings)
-                    if (addressStrings.isNotEmpty() && binding.editIssueLocation.hasFocus()) {
-                        binding.editIssueLocation.showDropDown()
-                    }
+                    updateAddressAdapter(addresses)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-        }.start()
+        } else {
+            Thread {
+                try {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocationName(query, 10)
+                    requireActivity().runOnUiThread {
+                        updateAddressAdapter(addresses ?: emptyList())
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }.start()
+        }
+    }
+
+    private fun updateAddressAdapter(addresses: List<Address>) {
+        if (_binding == null) return
+        val addressStrings = addresses.mapNotNull { it.getAddressLine(0) }.distinct()
+        addressAdapter.updateData(addressStrings)
+        if (addressStrings.isNotEmpty() && binding.editIssueLocation.hasFocus()) {
+            binding.editIssueLocation.showDropDown()
+        }
     }
 
     private fun checkPermissionAndOpenCamera() {
@@ -166,7 +277,7 @@ class RoadDamageReportFragment : Fragment() {
                 startCamera()
             }
             else -> {
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+                requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
@@ -229,7 +340,7 @@ class RoadDamageReportFragment : Fragment() {
 
         val email = auth.currentUser?.email
         if (email.isNullOrBlank()) {
-            Snackbar.make(binding.root, "Brak zalogowanego uzytkownika", Snackbar.LENGTH_LONG).show()
+            showSnackbar("Brak zalogowanego uzytkownika")
             return
         }
 
@@ -283,24 +394,16 @@ class RoadDamageReportFragment : Fragment() {
                 requireActivity().runOnUiThread {
                     setLoading(false)
                     if (code == HttpURLConnection.HTTP_CREATED || code == HttpURLConnection.HTTP_OK) {
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.issue_submit_success_with_status),
-                            Snackbar.LENGTH_LONG,
-                        ).show()
+                        showSnackbar(getString(R.string.issue_submit_success_with_status))
                         clearForm()
                     } else {
-                        Snackbar.make(binding.root, "Blad API: $code", Snackbar.LENGTH_LONG).show()
+                        showSnackbar("Blad API: $code")
                     }
                 }
             }.onFailure { error ->
                 requireActivity().runOnUiThread {
                     setLoading(false)
-                    Snackbar.make(
-                        binding.root,
-                        "Nie udalo sie wyslac zgloszenia: ${error.message}",
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    showSnackbar("Nie udalo sie wyslac zgloszenia: ${error.message}")
                 }
             }
         }.start()
@@ -358,12 +461,15 @@ class RoadDamageReportFragment : Fragment() {
         binding.editIssueLocation.isEnabled = !loading
     }
 
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    // Specjalny adapter, ktory nie filtruje wynikow (pokazuje wszystko co da Geocoder)
     private class NoFilterAdapter(context: Context, layout: Int) : ArrayAdapter<String>(context, layout) {
         private val items = mutableListOf<String>()
 

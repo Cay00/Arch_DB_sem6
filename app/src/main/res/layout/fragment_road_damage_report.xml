@@ -113,13 +113,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
+            android:hint="@string/issue_hint_location"
+            app:endIconMode="custom"
+            app:endIconDrawable="@android:drawable/ic_menu_mylocation"
+            app:endIconContentDescription="Zczytaj lokalizację"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/editIssueLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/issue_hint_location"
                 android:inputType="textPostalAddress"
                 android:minHeight="52dp"
                 android:textSize="18sp"
