@@ -1,7 +1,11 @@
 package com.example.urbanfix
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -38,6 +42,48 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val onAuth = destination.id == R.id.navigation_auth
             navView.visibility = if (onAuth) View.GONE else View.VISIBLE
+            applyAuthScreenChrome(onAuth)
+            invalidateOptionsMenu()
+        }
+    }
+
+    private fun actionBarSizePx(): Int {
+        val a = theme.obtainStyledAttributes(intArrayOf(androidx.appcompat.R.attr.actionBarSize))
+        val size = a.getDimensionPixelSize(0, 0)
+        a.recycle()
+        return size
+    }
+
+    private fun applyAuthScreenChrome(onAuth: Boolean) {
+        if (onAuth) {
+            supportActionBar?.hide()
+        } else {
+            supportActionBar?.show()
+        }
+        val host = binding.root.findViewById<View>(R.id.nav_host_fragment_activity_main)
+        val lp = host.layoutParams as ConstraintLayout.LayoutParams
+        lp.topMargin = if (onAuth) 0 else actionBarSizePx()
+        host.layoutParams = lp
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_toolbar_menu, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val onAuth = navController.currentDestination?.id == R.id.navigation_auth
+        menu.findItem(R.id.action_notifications)?.isVisible = !onAuth
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_notifications -> {
+                Toast.makeText(this, R.string.notifications_placeholder_toast, Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
