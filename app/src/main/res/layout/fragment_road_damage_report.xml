@@ -109,19 +109,21 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueLocation"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/editIssueLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/issue_hint_location"
+                android:inputType="textPostalAddress"
                 android:minHeight="52dp"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:completionThreshold="3" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -129,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Dodaj zdjęcie"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp" />
 
         <LinearLayout

@@ -1,12 +1,18 @@
 package com.example.urbanfix.ui.issues
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Filter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -26,6 +32,7 @@ import java.io.PrintWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import java.util.Locale
 import java.util.UUID
 
 class RoadDamageReportFragment : Fragment() {
@@ -37,6 +44,9 @@ class RoadDamageReportFragment : Fragment() {
 
     private var photoUri: Uri? = null
     private var photoFile: File? = null
+
+    private val geocoder by lazy { Geocoder(requireContext(), Locale("pl", "PL")) }
+    private lateinit var addressAdapter: NoFilterAdapter
 
     private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -50,7 +60,6 @@ class RoadDamageReportFragment : Fragment() {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             photoUri = it
-            // Kopiujemy plik z galerii do cache aplikacji, zeby miec do niego dostep jako File
             photoFile = copyUriToCache(it)
             showPhotoPreview()
         }
@@ -77,6 +86,13 @@ class RoadDamageReportFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupUserInformation()
+        setupPhotoButtons()
+        setupLocationAutocomplete()
+        binding.buttonSubmitIssue.setOnClickListener { submitIssue() }
+    }
+
+    private fun setupUserInformation() {
         val email = auth.currentUser?.email.orEmpty()
         binding.editIssueUserIdentity.setText(email)
         val firebaseName = auth.currentUser?.displayName?.trim().orEmpty()
@@ -99,10 +115,49 @@ class RoadDamageReportFragment : Fragment() {
         } else {
             binding.editIssueUserDisplayName.setText(getString(R.string.profile_dash))
         }
+    }
 
+    private fun setupPhotoButtons() {
         binding.buttonAddPhoto.setOnClickListener { checkPermissionAndOpenCamera() }
         binding.buttonSelectGallery.setOnClickListener { openGallery() }
-        binding.buttonSubmitIssue.setOnClickListener { submitIssue() }
+    }
+
+    private fun setupLocationAutocomplete() {
+        addressAdapter = NoFilterAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line)
+        binding.editIssueLocation.setAdapter(addressAdapter)
+
+        binding.editIssueLocation.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString()?.trim().orEmpty()
+                if (query.length >= 3) {
+                    searchAddresses(query)
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun searchAddresses(query: String) {
+        Thread {
+            try {
+                // Geocoder szuka pasujacych adresow
+                val addresses = geocoder.getFromLocationName(query, 10)
+                val addressStrings = addresses?.mapNotNull { address ->
+                    address.getAddressLine(0)
+                }?.distinct() ?: emptyList()
+
+                requireActivity().runOnUiThread {
+                    if (_binding == null) return@runOnUiThread
+                    addressAdapter.updateData(addressStrings)
+                    if (addressStrings.isNotEmpty() && binding.editIssueLocation.hasFocus()) {
+                        binding.editIssueLocation.showDropDown()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     private fun checkPermissionAndOpenCamera() {
@@ -285,9 +340,9 @@ class RoadDamageReportFragment : Fragment() {
     }
 
     private fun clearForm() {
+        binding.editIssueLocation.setText("")
         binding.editIssueTitle.text = null
         binding.editIssueDescription.text = null
-        binding.editIssueLocation.text = null
         binding.imagePreview.visibility = View.GONE
         photoFile = null
         photoUri = null
@@ -306,5 +361,32 @@ class RoadDamageReportFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Specjalny adapter, ktory nie filtruje wynikow (pokazuje wszystko co da Geocoder)
+    private class NoFilterAdapter(context: Context, layout: Int) : ArrayAdapter<String>(context, layout) {
+        private val items = mutableListOf<String>()
+
+        fun updateData(newData: List<String>) {
+            items.clear()
+            items.addAll(newData)
+            clear()
+            addAll(newData)
+            notifyDataSetChanged()
+        }
+
+        override fun getFilter(): Filter {
+            return object : Filter() {
+                override fun performFiltering(constraint: CharSequence?): FilterResults {
+                    val results = FilterResults()
+                    results.values = items
+                    results.count = items.size
+                    return results
+                }
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                    notifyDataSetChanged()
+                }
+            }
+        }
     }
 }
