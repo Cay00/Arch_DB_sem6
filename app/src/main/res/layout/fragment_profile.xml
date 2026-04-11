@@ -42,10 +42,25 @@
                     android:textAppearance="@style/TextAppearance.Urbanfix.Title" />
 
                 <TextView
-                    android:id="@+id/text_profile_email_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
+                    android:text="@string/profile_name_label"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.Label" />
+
+                <TextView
+                    android:id="@+id/text_profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.Body"
+                    tools:text="Jan Kowalski" />
+
+                <TextView
+                    android:id="@+id/text_profile_email_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:text="@string/profile_email_label"
                     android:textAppearance="@style/TextAppearance.Urbanfix.Label" />
 

@@ -47,7 +47,7 @@
     <string name="issue_hint_title">Tytuł</string>
     <string name="issue_hint_description">Opis</string>
     <string name="issue_hint_location">Lokalizacja</string>
-    <string name="issue_hint_user_id">User ID (konto): email zalogowanego użytkownika</string>
+    <string name="issue_hint_user_id">User ID (konto)</string>
     <string name="issue_button_submit">Wyślij zgłoszenie</string>
     <string name="my_issues_title">Twoje zgłoszenia</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>
@@ -55,6 +55,7 @@
 
     <string name="profile_intro">Twoje konto, podsumowanie zgłoszeń i ustawienia.</string>
     <string name="profile_section_account">Konto</string>
+    <string name="profile_name_label">Imię i nazwisko</string>
     <string name="profile_email_label">E-mail</string>
     <string name="profile_firebase_uid_label">Identyfikator Firebase</string>
     <string name="profile_backend_id_label">ID w backendzie (Postgres)</string>

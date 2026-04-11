@@ -7,6 +7,8 @@ class UserSyncRequest(BaseModel):
     email: EmailStr
     firebase_uid: str | None = Field(default=None, max_length=128)
     password_hash: str | None = Field(default=None, max_length=500)
+    first_name: str | None = Field(default=None, max_length=120)
+    last_name: str | None = Field(default=None, max_length=120)
 
     model_config = ConfigDict(extra="ignore")
 
@@ -22,5 +24,7 @@ class UserPublic(BaseModel):
 
     id: int
     email: EmailStr
+    first_name: str
+    last_name: str
     display_name: str
     firebase_uid: str | None = None

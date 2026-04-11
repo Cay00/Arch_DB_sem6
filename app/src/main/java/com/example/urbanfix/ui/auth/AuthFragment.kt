@@ -14,6 +14,7 @@ import com.example.urbanfix.data.BackendApi
 import com.example.urbanfix.databinding.FragmentAuthBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class AuthFragment : Fragment() {
 
@@ -131,9 +132,32 @@ class AuthFragment : Fragment() {
                 snackbar(message)
                 return@addOnCompleteListener
             }
-            // Zawsze zsynchronizuj z backendem: po rejestracji i po logowaniu.
-            // POST /users → 201 (nowy) lub 409 (już w bazie) — naprawia brak rekordu gdy wcześniej backend nie działał.
-            pushUserToBackendThenNavigate(email, password)
+            val user = auth.currentUser
+            if (user == null) {
+                setLoading(false)
+                snackbar(getString(R.string.auth_error_generic))
+                return@addOnCompleteListener
+            }
+            if (isRegisterMode) {
+                val firstName = binding.editFirstName.text?.toString()?.trim().orEmpty()
+                val lastName = binding.editLastName.text?.toString()?.trim().orEmpty()
+                val displayName = "$firstName $lastName".trim()
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setDisplayName(displayName)
+                    .build()
+                user.updateProfile(profileUpdates).addOnCompleteListener(requireActivity()) { profileTask ->
+                    if (!profileTask.isSuccessful) {
+                        setLoading(false)
+                        val message = profileTask.exception?.localizedMessage
+                            ?: getString(R.string.auth_error_generic)
+                        snackbar(message)
+                        return@addOnCompleteListener
+                    }
+                    pushUserToBackendThenNavigate(email, password, firstName, lastName)
+                }
+            } else {
+                pushUserToBackendThenNavigate(email, password, null, null)
+            }
         }
     }
 
@@ -153,12 +177,17 @@ class AuthFragment : Fragment() {
         binding.editLastName.isEnabled = !loading
     }
 
-    private fun pushUserToBackendThenNavigate(email: String, password: String) {
+    private fun pushUserToBackendThenNavigate(
+        email: String,
+        password: String,
+        firstName: String?,
+        lastName: String?,
+    ) {
         val baseUrl = requireContext().getString(R.string.backend_base_url)
         val firebaseUid = auth.currentUser?.uid
         Thread {
             val syncResult = runCatching {
-                BackendApi.registerUser(baseUrl, email, password, firebaseUid)
+                BackendApi.registerUser(baseUrl, email, password, firebaseUid, firstName, lastName)
             }
             requireActivity().runOnUiThread {
                 setLoading(false)

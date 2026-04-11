@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
+import com.example.urbanfix.data.BackendUserJson
 import com.example.urbanfix.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONArray
@@ -53,11 +54,14 @@ class ProfileFragment : Fragment() {
         binding.textProfileEmail.text = user?.email ?: getString(R.string.profile_not_signed_in)
         binding.textProfileFirebaseUid.text =
             user?.uid ?: getString(R.string.profile_dash)
+        binding.textProfileName.text =
+            user?.displayName?.trim()?.takeIf { it.isNotEmpty() } ?: getString(R.string.profile_dash)
     }
 
     private fun loadBackendSummary() {
         val email = auth.currentUser?.email
         if (email.isNullOrBlank()) {
+            binding.textProfileName.text = getString(R.string.profile_dash)
             binding.textProfileBackendId.text = getString(R.string.profile_dash)
             binding.textProfileIssuesSummary.text = getString(R.string.profile_issues_need_login)
             return
@@ -66,15 +70,21 @@ class ProfileFragment : Fragment() {
         binding.progressProfileBackend.visibility = View.VISIBLE
         Thread {
             val result = runCatching {
-                val userId = fetchUserIdByEmail(email)
+                val userJson = fetchUserJsonByEmail(email)
+                val userId = userJson.getInt("id")
+                val backendName = BackendUserJson.displayNameFromUser(userJson)
                 val issues = fetchIssues(userId)
-                userId to issues.length()
+                Triple(userId, issues.length(), backendName)
             }
             requireActivity().runOnUiThread {
                 binding.progressProfileBackend.visibility = View.GONE
                 result.fold(
-                    onSuccess = { (userId, count) ->
+                    onSuccess = { (userId, count, backendName) ->
                         binding.textProfileBackendId.text = userId.toString()
+                        val resolvedName = backendName.ifBlank {
+                            auth.currentUser?.displayName?.trim().orEmpty()
+                        }.ifBlank { getString(R.string.profile_dash) }
+                        binding.textProfileName.text = resolvedName
                         binding.textProfileIssuesSummary.text =
                             resources.getQuantityString(
                                 R.plurals.profile_issues_count,
@@ -91,7 +101,7 @@ class ProfileFragment : Fragment() {
         }.start()
     }
 
-    private fun fetchUserIdByEmail(email: String): Int {
+    private fun fetchUserJsonByEmail(email: String): JSONObject {
         val encoded = URLEncoder.encode(email, Charsets.UTF_8.name())
         val c =
             (URL("${backendBaseUrl()}/users/by-email?email=$encoded").openConnection() as HttpURLConnection).apply {
@@ -104,7 +114,7 @@ class ProfileFragment : Fragment() {
                 error("HTTP ${c.responseCode}")
             }
             val body = c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-            JSONObject(body).getInt("id")
+            JSONObject(body)
         } finally {
             c.disconnect()
         }

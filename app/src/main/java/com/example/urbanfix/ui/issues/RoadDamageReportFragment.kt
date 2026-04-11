@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.urbanfix.R
+import com.example.urbanfix.data.BackendUserJson
 import com.example.urbanfix.databinding.FragmentRoadDamageReportBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -33,7 +34,28 @@ class RoadDamageReportFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.editIssueUserIdentity.setText(auth.currentUser?.email.orEmpty())
+        val email = auth.currentUser?.email.orEmpty()
+        binding.editIssueUserIdentity.setText(email)
+        val firebaseName = auth.currentUser?.displayName?.trim().orEmpty()
+        if (firebaseName.isNotEmpty()) {
+            binding.editIssueUserDisplayName.setText(firebaseName)
+        } else if (email.isNotBlank()) {
+            binding.editIssueUserDisplayName.setText(getString(R.string.profile_dash))
+            Thread {
+                val name = runCatching {
+                    val json = fetchUserJsonByEmail(email)
+                    BackendUserJson.displayNameFromUser(json)
+                }.getOrDefault("")
+                requireActivity().runOnUiThread {
+                    if (_binding == null) return@runOnUiThread
+                    binding.editIssueUserDisplayName.setText(
+                        name.ifBlank { getString(R.string.profile_dash) },
+                    )
+                }
+            }.start()
+        } else {
+            binding.editIssueUserDisplayName.setText(getString(R.string.profile_dash))
+        }
         binding.buttonSubmitIssue.setOnClickListener { submitIssue() }
     }
 
@@ -119,19 +141,23 @@ class RoadDamageReportFragment : Fragment() {
         }.start()
     }
 
-    private fun fetchCurrentUserId(email: String): Int {
+    private fun fetchCurrentUserId(email: String): Int =
+        fetchUserJsonByEmail(email).getInt("id")
+
+    private fun fetchUserJsonByEmail(email: String): JSONObject {
         val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
-        val connection = (URL("${backendBaseUrl()}/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
-            requestMethod = "GET"
-            connectTimeout = 5000
-            readTimeout = 5000
-        }
+        val connection =
+            (URL("${backendBaseUrl()}/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 5000
+                readTimeout = 5000
+            }
         return try {
             if (connection.responseCode != HttpURLConnection.HTTP_OK) {
                 throw IllegalStateException("Nie znaleziono użytkownika w backendzie")
             }
             val body = connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-            JSONObject(body).getInt("id")
+            JSONObject(body)
         } finally {
             connection.disconnect()
         }
