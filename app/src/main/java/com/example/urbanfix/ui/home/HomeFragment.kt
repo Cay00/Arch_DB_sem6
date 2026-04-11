@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
@@ -20,21 +21,34 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        binding.root.findViewById<View>(R.id.tile_road_damage)?.setOnClickListener {
-            findNavController().navigate(R.id.navigation_road_damage_report)
-        }
-        binding.root.findViewById<View>(R.id.tile_street_lighting)?.setOnClickListener {
-            // TODO: Otwórz ekran zgłoszenia awarii oświetlenia
-        }
-        binding.root.findViewById<View>(R.id.tile_illegal_dumping)?.setOnClickListener {
-            // TODO: Otwórz ekran zgłoszenia nielegalnego wysypiska
-        }
-        binding.root.findViewById<View>(R.id.tile_vandalism)?.setOnClickListener {
-            // TODO: Otwórz ekran zgłoszenia wandalizmu
-        }
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Podpinamy Twoje oryginalne kafelki do wspolnego formularza
+        binding.tileRoadDamage.setOnClickListener {
+            navigateToReport("Drogi")
+        }
+
+        binding.tileStreetLighting.setOnClickListener {
+            navigateToReport("Awaria oswietlenia")
+        }
+
+        binding.tileIllegalDumping.setOnClickListener {
+            navigateToReport("Nielegalne wysypisko")
+        }
+
+        binding.tileVandalism.setOnClickListener {
+            navigateToReport("Akt wandalizmu")
+        }
+    }
+
+    private fun navigateToReport(category: String) {
+        // Przekazujemy kategorie w Bundle, co jest bezpieczniejsze niz SafeArgs przy refaktoryzacji
+        val bundle = bundleOf("category" to category)
+        findNavController().navigate(R.id.action_navigation_home_to_road_damage_report, bundle)
     }
 
     override fun onDestroyView() {

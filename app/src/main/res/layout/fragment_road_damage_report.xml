@@ -18,10 +18,11 @@
         android:paddingBottom="8dp">
 
         <TextView
+            android:id="@+id/textCategoryLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/issue_form_category_road"
-            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
+            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
+            tools:text="Kategoria: Drogi" />
 
         <TextView
             android:layout_width="match_parent"

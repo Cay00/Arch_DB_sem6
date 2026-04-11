@@ -40,9 +40,14 @@ import java.net.URLEncoder
 import java.util.Locale
 import java.util.UUID
 
-class RoadDamageReportFragment : Fragment() {
+class ReportFragment : Fragment() {
     private var _binding: FragmentRoadDamageReportBinding? = null
     private val binding get() = _binding!!
+
+    // Pobieramy biezaca kategorie z argumentow nawigacji (przekazana przez bundleOf)
+    private val categoryArg: String by lazy {
+        arguments?.getString("category") ?: "Drogi"
+    }
 
     private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
@@ -101,6 +106,10 @@ class RoadDamageReportFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Wyswietlamy wybrana kategorie na gorze formularza
+        binding.textCategoryLabel.text = "Kategoria: $categoryArg"
+        
         setupUserInformation()
         setupPhotoButtons()
         setupLocationAutocomplete()
@@ -130,13 +139,11 @@ class RoadDamageReportFragment : Fragment() {
 
         binding.progressIssue.visibility = View.VISIBLE
         
-        // Proba pobrania biezacej lokalizacji
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
             .addOnSuccessListener { location ->
                 if (location != null) {
                     reverseGeocode(location.latitude, location.longitude)
                 } else {
-                    // Jesli biezaca lokalizacja jest null, probujemy pobrac ostatnia znana (szybsze)
                     fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
                         if (lastLoc != null) {
                             reverseGeocode(lastLoc.latitude, lastLoc.longitude)
@@ -144,9 +151,6 @@ class RoadDamageReportFragment : Fragment() {
                             binding.progressIssue.visibility = View.GONE
                             showSnackbar("Nie udalo sie pobrac lokalizacji GPS. Sprobuj ponownie.")
                         }
-                    }.addOnFailureListener {
-                        binding.progressIssue.visibility = View.GONE
-                        showSnackbar("Blad lokalizacji")
                     }
                 }
             }
@@ -185,12 +189,8 @@ class RoadDamageReportFragment : Fragment() {
         binding.progressIssue.visibility = View.GONE
         val addressStr = address?.getAddressLine(0)
         if (addressStr != null) {
-            // setText(text, false) informuje TextInputLayout, ze pole nie jest puste
-            // co powoduje poprawne "podniesienie" napisu Lokalizacja do gory.
             binding.editIssueLocation.setText(addressStr, false)
             binding.editIssueLocation.dismissDropDown()
-        } else {
-            showSnackbar("Nie znaleziono adresu dla tej pozycji")
         }
     }
 
@@ -364,7 +364,10 @@ class RoadDamageReportFragment : Fragment() {
                     PrintWriter(OutputStreamWriter(outputStream, Charsets.UTF_8), true).use { writer ->
                         addFormField(writer, outputStream, boundary, "title", title)
                         addFormField(writer, outputStream, boundary, "description", description)
-                        addFormField(writer, outputStream, boundary, "category", "Drogi")
+                        
+                        // Przesylamy dynamiczna kategorie pobrana z argumentow
+                        addFormField(writer, outputStream, boundary, "category", categoryArg)
+
                         addFormField(writer, outputStream, boundary, "location", location)
                         addFormField(writer, outputStream, boundary, "user_id", userId.toString())
 
