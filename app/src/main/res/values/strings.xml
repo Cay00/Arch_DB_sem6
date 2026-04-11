@@ -25,6 +25,8 @@
     <string name="auth_backend_sync_failed">Firebase OK, ale zapis do backendu nieudany: %1$s</string>
 
     <string name="action_logout">Wyloguj</string>
+    <string name="menu_notifications">Powiadomienia</string>
+    <string name="notifications_placeholder_toast">Powiadomienia pojawią się w kolejnej wersji aplikacji.</string>
 
     <string name="home_report_title">Zgłoś problem miejski</string>
     <string name="tile_road_damage">Uszkodzenie nawierzchni</string>

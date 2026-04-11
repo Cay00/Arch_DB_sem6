@@ -17,4 +17,26 @@
         <item name="textAppearanceSubtitle1">@style/TextAppearance.Urbanfix.Subtitle</item>
         <item name="textAppearanceCaption">@style/TextAppearance.Urbanfix.Label</item>
     </style>
+
+    <style name="Widget.Urbanfix.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@drawable/bg_bottom_nav</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="elevation">10dp</item>
+        <item name="itemIconTint">@color/bottom_nav_item_tint</item>
+        <item name="itemTextColor">@color/bottom_nav_item_tint</item>
+        <item name="itemRippleColor">@color/bottom_nav_ripple</item>
+        <item name="itemIconSize">28dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Urbanfix.BottomNav.Active</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Urbanfix.BottomNav.Inactive</item>
+    </style>
+
+    <style name="Widget.Urbanfix.HomeIssueTile" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">1dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/home_tile_stroke</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="rippleColor">@color/bottom_nav_ripple</item>
+    </style>
 </resources>

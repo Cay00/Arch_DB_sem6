@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bottom_nav_ripple_fill">#33FFB74D</color>
+    <color name="home_tile_stroke">#22FFFFFF</color>
+    <color name="home_tile_icon_scrim">#28FFB74D</color>
+</resources>
