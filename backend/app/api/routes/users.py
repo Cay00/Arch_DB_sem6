@@ -16,6 +16,12 @@ def _display_from_names(first: str, last: str, email: str) -> str:
     return full or email.split("@", 1)[0]
 
 
+def _account_type_for_insert(payload: UserSyncRequest) -> str:
+    if payload.account_type in ("citizen", "official"):
+        return payload.account_type
+    return "citizen"
+
+
 def _apply_optional_names(user: User, payload: UserSyncRequest) -> None:
     """Uzupełnia imię/nazwisko i display_name, jeśli klient przesłał niepuste wartości (logowanie bez pól nie czyści danych)."""
     fn = (payload.first_name or "").strip()
@@ -81,6 +87,7 @@ def sync_user(
         first_name=fn,
         last_name=ln,
         display_name=_display_from_names(fn, ln, payload.email),
+        account_type=_account_type_for_insert(payload),
     )
     db.add(user)
     try:

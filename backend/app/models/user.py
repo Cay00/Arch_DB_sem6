@@ -18,6 +18,7 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(120), nullable=False, default="")
     last_name: Mapped[str] = mapped_column(String(120), nullable=False, default="")
     display_name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    account_type: Mapped[str] = mapped_column(String(20), nullable=False, default="citizen")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

@@ -30,6 +30,24 @@ def _ensure_user_name_columns() -> None:
                 )
 
 
+def _ensure_user_account_type_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "account_type" in cols:
+        return
+    is_sqlite = engine.dialect.name == "sqlite"
+    with engine.begin() as conn:
+        if is_sqlite:
+            conn.execute(text("ALTER TABLE users ADD COLUMN account_type VARCHAR(20) DEFAULT 'citizen'"))
+        else:
+            conn.execute(
+                text("ALTER TABLE users ADD COLUMN account_type VARCHAR(20) NOT NULL DEFAULT 'citizen'")
+            )
+
+
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_user_name_columns()
+    _ensure_user_account_type_column()

@@ -24,6 +24,7 @@ object BackendApi {
         firebaseUid: String?,
         firstName: String? = null,
         lastName: String? = null,
+        accountType: String? = null,
     ) {
         val normalized = baseUrl.trimEnd('/')
         val connection = (URL("$normalized/users").openConnection() as HttpURLConnection).apply {
@@ -40,6 +41,7 @@ object BackendApi {
             }
             firstName?.trim()?.takeIf { it.isNotEmpty() }?.let { body.put("first_name", it) }
             lastName?.trim()?.takeIf { it.isNotEmpty() }?.let { body.put("last_name", it) }
+            accountType?.trim()?.takeIf { it.isNotEmpty() }?.let { body.put("account_type", it) }
             OutputStreamWriter(connection.outputStream, Charsets.UTF_8).use { it.write(body.toString()) }
             val code = connection.responseCode
             val text = readResponsePayload(connection)

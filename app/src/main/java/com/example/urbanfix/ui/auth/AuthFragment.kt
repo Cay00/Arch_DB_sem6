@@ -73,6 +73,7 @@ class AuthFragment : Fragment() {
             binding.buttonSubmit.setText(R.string.auth_action_register)
             binding.textSwitchMode.setText(R.string.auth_switch_to_login)
             binding.groupRegisterFields.visibility = View.VISIBLE
+            binding.switchAccountType.isChecked = false
         } else {
             binding.textAuthHeading.setText(R.string.auth_heading_login)
             binding.textAuthSubtitle.setText(R.string.auth_subtitle_login)
@@ -153,10 +154,11 @@ class AuthFragment : Fragment() {
                         snackbar(message)
                         return@addOnCompleteListener
                     }
-                    pushUserToBackendThenNavigate(email, password, firstName, lastName)
+                    val accountType = if (binding.switchAccountType.isChecked) "official" else "citizen"
+                    pushUserToBackendThenNavigate(email, password, firstName, lastName, accountType)
                 }
             } else {
-                pushUserToBackendThenNavigate(email, password, null, null)
+                pushUserToBackendThenNavigate(email, password, null, null, null)
             }
         }
     }
@@ -182,12 +184,21 @@ class AuthFragment : Fragment() {
         password: String,
         firstName: String?,
         lastName: String?,
+        accountType: String?,
     ) {
         val baseUrl = requireContext().getString(R.string.backend_base_url)
         val firebaseUid = auth.currentUser?.uid
         Thread {
             val syncResult = runCatching {
-                BackendApi.registerUser(baseUrl, email, password, firebaseUid, firstName, lastName)
+                BackendApi.registerUser(
+                    baseUrl,
+                    email,
+                    password,
+                    firebaseUid,
+                    firstName,
+                    lastName,
+                    accountType,
+                )
             }
             requireActivity().runOnUiThread {
                 setLoading(false)
