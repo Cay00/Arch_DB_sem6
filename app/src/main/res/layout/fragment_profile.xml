@@ -140,6 +140,14 @@
                     android:textAppearance="@style/TextAppearance.Urbanfix.Body"
                     tools:text="Masz 3 zgłoszenia." />
 
+                <LinearLayout
+                    android:id="@+id/profile_issues_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_profile_open_issues"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"

@@ -47,7 +47,17 @@ def _ensure_user_account_type_column() -> None:
             )
 
 
+def _migrate_issue_status_legacy() -> None:
+    """Stare zgłoszenia NEW → Zgłoszone."""
+    insp = inspect(engine)
+    if not insp.has_table("issues"):
+        return
+    with engine.begin() as conn:
+        conn.execute(text("UPDATE issues SET status = 'Zgłoszone' WHERE status IN ('NEW', 'new')"))
+
+
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_user_name_columns()
     _ensure_user_account_type_column()
+    _migrate_issue_status_legacy()

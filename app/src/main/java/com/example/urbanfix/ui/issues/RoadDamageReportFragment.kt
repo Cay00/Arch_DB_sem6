@@ -99,7 +99,6 @@ class RoadDamageReportFragment : Fragment() {
                     .put("title", title)
                     .put("description", description)
                     .put("category", "Drogi")
-                    .put("status", "NEW")
                     .put("location", location)
                     .put("user_id", userId)
                     .toString()
@@ -122,7 +121,11 @@ class RoadDamageReportFragment : Fragment() {
                 requireActivity().runOnUiThread {
                     setLoading(false)
                     if (code == HttpURLConnection.HTTP_CREATED) {
-                        Snackbar.make(binding.root, "Zgłoszenie zapisane", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.issue_submit_success_with_status),
+                            Snackbar.LENGTH_LONG,
+                        ).show()
                         clearForm()
                     } else {
                         Snackbar.make(binding.root, "Błąd API: $code", Snackbar.LENGTH_LONG).show()

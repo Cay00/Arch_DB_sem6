@@ -1,11 +1,12 @@
 package com.example.urbanfix.ui.dashboard
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentDashboardBinding
@@ -118,6 +119,7 @@ class DashboardFragment : Fragment() {
 
     private fun createIssueCard(issue: JSONObject): View {
         val context = requireContext()
+        val density = resources.displayMetrics.density
         val card = MaterialCardView(context).apply {
             radius = 16f
             cardElevation = 2f
@@ -131,22 +133,44 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        val text = TextView(context).apply {
-            text = buildString {
-                append(issue.optString("title"))
-                append("\n")
-                append("Status: ${issue.optString("status")}")
-                append("\n")
-                append("Kategoria: ${issue.optString("category")}")
-                append("\n")
-                append("Lokalizacja: ${issue.optString("location")}")
-                append("\n")
-                append(issue.optString("description"))
-            }
-            textSize = 18f
-            setPadding(8)
+        val inner = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
         }
-        card.addView(text)
+
+        val statusText = issue.optString("status").ifBlank { getString(R.string.profile_dash) }
+        inner.addView(
+            TextView(context).apply {
+                text = getString(R.string.issue_card_status, statusText)
+                textSize = 17f
+                setTypeface(null, Typeface.BOLD)
+            },
+        )
+        inner.addView(
+            TextView(context).apply {
+                text = issue.optString("title")
+                textSize = 18f
+                setTypeface(null, Typeface.BOLD)
+                setPadding(0, (6 * density).toInt(), 0, 0)
+            },
+        )
+        inner.addView(
+            TextView(context).apply {
+                text = buildString {
+                    append("Kategoria: ${issue.optString("category")}")
+                    append("\n")
+                    append("Lokalizacja: ${issue.optString("location")}")
+                    append("\n\n")
+                    append(issue.optString("description"))
+                }
+                textSize = 17f
+                setPadding(0, (8 * density).toInt(), 0, 0)
+            },
+        )
+        card.addView(inner)
         return card
     }
 

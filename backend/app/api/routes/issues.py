@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
+from app.core.issue_status import DEFAULT_ON_CREATE
 from app.models.issue import Issue
 from app.models.user import User
 from app.schemas.issue import IssueCreate, IssuePublic
@@ -20,7 +21,7 @@ def create_issue(payload: IssueCreate, db: Session = Depends(get_db)) -> Issue:
         title=payload.title,
         description=payload.description,
         category=payload.category,
-        status=payload.status,
+        status=DEFAULT_ON_CREATE,
         location=payload.location,
         user_id=payload.user_id,
     )

@@ -1,9 +1,12 @@
 package com.example.urbanfix.ui.profile
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -23,6 +26,8 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+
+    private data class ProfileLoad(val userId: Int, val issues: JSONArray, val backendName: String)
 
     private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
 
@@ -64,6 +69,7 @@ class ProfileFragment : Fragment() {
             binding.textProfileName.text = getString(R.string.profile_dash)
             binding.textProfileBackendId.text = getString(R.string.profile_dash)
             binding.textProfileIssuesSummary.text = getString(R.string.profile_issues_need_login)
+            clearProfileIssuesList()
             return
         }
 
@@ -74,31 +80,90 @@ class ProfileFragment : Fragment() {
                 val userId = userJson.getInt("id")
                 val backendName = BackendUserJson.displayNameFromUser(userJson)
                 val issues = fetchIssues(userId)
-                Triple(userId, issues.length(), backendName)
+                ProfileLoad(userId, issues, backendName)
             }
             requireActivity().runOnUiThread {
                 binding.progressProfileBackend.visibility = View.GONE
                 result.fold(
-                    onSuccess = { (userId, count, backendName) ->
-                        binding.textProfileBackendId.text = userId.toString()
-                        val resolvedName = backendName.ifBlank {
+                    onSuccess = { load ->
+                        binding.textProfileBackendId.text = load.userId.toString()
+                        val resolvedName = load.backendName.ifBlank {
                             auth.currentUser?.displayName?.trim().orEmpty()
                         }.ifBlank { getString(R.string.profile_dash) }
                         binding.textProfileName.text = resolvedName
+                        val count = load.issues.length()
                         binding.textProfileIssuesSummary.text =
                             resources.getQuantityString(
                                 R.plurals.profile_issues_count,
                                 count,
-                                count
+                                count,
                             )
+                        renderProfileIssuesList(load.issues)
                     },
                     onFailure = {
                         binding.textProfileBackendId.text = getString(R.string.profile_backend_error)
                         binding.textProfileIssuesSummary.text = getString(R.string.profile_issues_load_error)
+                        clearProfileIssuesList()
                     },
                 )
             }
         }.start()
+    }
+
+    private fun clearProfileIssuesList() {
+        binding.profileIssuesList.removeAllViews()
+        binding.profileIssuesList.visibility = View.GONE
+    }
+
+    private fun renderProfileIssuesList(issues: JSONArray) {
+        binding.profileIssuesList.removeAllViews()
+        if (issues.length() == 0) {
+            binding.profileIssuesList.visibility = View.GONE
+            return
+        }
+        binding.profileIssuesList.visibility = View.VISIBLE
+        val ctx = requireContext()
+        val density = resources.displayMetrics.density
+        val padV = (8 * density).toInt()
+        val divH = (1 * density).toInt().coerceAtLeast(1)
+        for (i in 0 until issues.length()) {
+            val issue = issues.getJSONObject(i)
+            if (i > 0) {
+                binding.profileIssuesList.addView(
+                    View(ctx).apply {
+                        layoutParams = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            divH,
+                        )
+                        setBackgroundColor(0x26000000)
+                    },
+                )
+            }
+            val block = LinearLayout(ctx).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                )
+                setPadding(0, padV, 0, padV)
+            }
+            val statusRaw = issue.optString("status").ifBlank { getString(R.string.profile_dash) }
+            block.addView(
+                TextView(ctx).apply {
+                    text = getString(R.string.issue_card_status, statusRaw)
+                    textSize = 16f
+                    setTypeface(null, Typeface.BOLD)
+                },
+            )
+            block.addView(
+                TextView(ctx).apply {
+                    text = issue.optString("title")
+                    textSize = 17f
+                    setPadding(0, (4 * density).toInt(), 0, 0)
+                },
+            )
+            binding.profileIssuesList.addView(block)
+        }
     }
 
     private fun fetchUserJsonByEmail(email: String): JSONObject {

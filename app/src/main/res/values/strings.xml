@@ -43,12 +43,14 @@
     <string name="tile_vandalism">Akt wandalizmu</string>
     <string name="issue_form_title">Zgłoś uszkodzenie nawierzchni</string>
     <string name="issue_form_category_road">Kategoria: Drogi</string>
-    <string name="issue_form_status_new">Status: NEW</string>
+    <string name="issue_form_status_new">Status po złożeniu: Zgłoszone</string>
     <string name="issue_hint_title">Tytuł</string>
     <string name="issue_hint_description">Opis</string>
     <string name="issue_hint_location">Lokalizacja</string>
     <string name="issue_hint_user_id">User ID (konto)</string>
     <string name="issue_button_submit">Wyślij zgłoszenie</string>
+    <string name="issue_card_status">Status: %1$s</string>
+    <string name="issue_submit_success_with_status">Zgłoszenie zapisane. Status: Zgłoszone</string>
     <string name="my_issues_title">Twoje zgłoszenia</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>
     <string name="my_issues_load_error">Nie udało się pobrać zgłoszeń.</string>
