@@ -30,9 +30,14 @@
 
     <fragment
         android:id="@+id/navigation_road_damage_report"
-        android:name="com.example.urbanfix.ui.issues.RoadDamageReportFragment"
+        android:name="com.example.urbanfix.ui.issues.ReportFragment"
         android:label="@string/issue_form_title"
-        tools:layout="@layout/fragment_road_damage_report" />
+        tools:layout="@layout/fragment_road_damage_report">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="Drogi" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"

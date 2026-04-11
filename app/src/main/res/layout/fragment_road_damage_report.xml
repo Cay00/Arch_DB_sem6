@@ -18,10 +18,11 @@
         android:paddingBottom="8dp">
 
         <TextView
+            android:id="@+id/textCategoryLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/issue_form_category_road"
-            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
+            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
+            tools:text="Kategoria: Drogi" />
 
         <TextView
             android:layout_width="match_parent"
@@ -109,20 +110,76 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueLocation"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
+            android:hint="@string/issue_hint_location"
+            app:endIconMode="custom"
+            app:endIconDrawable="@android:drawable/ic_menu_mylocation"
+            app:endIconContentDescription="Zczytaj lokalizację"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/editIssueLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/issue_hint_location"
+                android:inputType="textPostalAddress"
                 android:minHeight="52dp"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:completionThreshold="3" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Dodaj zdjęcie"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonAddPhoto"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:minHeight="52dp"
+                android:text="Aparat"
+                android:textSize="14sp"
+                app:cornerRadius="12dp"
+                app:icon="@android:drawable/ic_menu_camera" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSelectGallery"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:minHeight="52dp"
+                android:text="Galeria"
+                android:textSize="14sp"
+                app:cornerRadius="12dp"
+                app:icon="@android:drawable/ic_menu_gallery" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imagePreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSubmitIssue"
