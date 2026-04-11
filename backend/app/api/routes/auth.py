@@ -18,7 +18,10 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)) -> TokenRe
     user = User(
         email=payload.email,
         hashed_password=hash_password(payload.password),
-        display_name=payload.display_name or payload.email.split("@")[0],
+        first_name="",
+        last_name="",
+        display_name=payload.display_name or payload.email.split("@", 1)[0],
+        account_type="citizen",
     )
     db.add(user)
     db.commit()

@@ -17,7 +17,15 @@ object BackendApi {
      * Synchronizacja konta po Firebase: e-mail, UID Firebase, hasło (pole JSON `password_hash` — serwer robi bcrypt).
      * Sukces: 200 (aktualizacja) lub 201 (nowy); 409 przy konflikcie unikalności.
      */
-    fun registerUser(baseUrl: String, email: String, password: String, firebaseUid: String?) {
+    fun registerUser(
+        baseUrl: String,
+        email: String,
+        password: String,
+        firebaseUid: String?,
+        firstName: String? = null,
+        lastName: String? = null,
+        accountType: String? = null,
+    ) {
         val normalized = baseUrl.trimEnd('/')
         val connection = (URL("$normalized/users").openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
@@ -31,6 +39,9 @@ object BackendApi {
             if (firebaseUid != null) {
                 body.put("firebase_uid", firebaseUid)
             }
+            firstName?.trim()?.takeIf { it.isNotEmpty() }?.let { body.put("first_name", it) }
+            lastName?.trim()?.takeIf { it.isNotEmpty() }?.let { body.put("last_name", it) }
+            accountType?.trim()?.takeIf { it.isNotEmpty() }?.let { body.put("account_type", it) }
             OutputStreamWriter(connection.outputStream, Charsets.UTF_8).use { it.write(body.toString()) }
             val code = connection.responseCode
             val text = readResponsePayload(connection)

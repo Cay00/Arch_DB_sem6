@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/issue_detail_screen_padding_v">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/issue_detail_screen_padding_h"
+        android:paddingTop="@dimen/issue_detail_screen_padding_v">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_issue_detail"
+            style="@style/Widget.Urbanfix.HomeIssueTile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/issue_detail_card_margin_bottom">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/issue_list_card_content_padding_horizontal"
+                android:paddingTop="@dimen/issue_list_card_content_padding_top"
+                android:paddingBottom="@dimen/issue_list_card_content_padding_bottom">
+
+                <TextView
+                    android:id="@+id/text_issue_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_issue_detail_id_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.Label"
+                    android:textColor="?attr/colorPrimary"
+                    android:textStyle="bold"
+                    tools:text="ID: 12" />
+
+                <TextView
+                    android:id="@+id/text_issue_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_title_margin_top"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.Title"
+                    android:textSize="22sp"
+                    tools:text="Tytuł zgłoszenia" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_description"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="Opis" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_category"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="Drogi" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_status"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="Zgłoszone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_location"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="ul. Przykładowa 1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_created"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_created"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="2026-01-01" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_user_id"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_user_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="5" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_official_actions"
+            style="@style/Widget.Urbanfix.HomeIssueTile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/issue_list_card_content_padding_horizontal"
+                android:paddingTop="@dimen/issue_list_card_content_padding_top"
+                android:paddingBottom="@dimen/issue_list_card_content_padding_bottom">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/issue_detail_official_section_title"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.Subtitle"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:hint="@string/issue_detail_status_hint"
+                    app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/dropdown_issue_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_save_status"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_save_status"
+                    app:cornerRadius="@dimen/home_issue_tile_corner_radius" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
@@ -13,20 +14,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:paddingTop="16dp"
+        android:paddingTop="12dp"
         android:paddingBottom="8dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/issue_form_title"
-            android:textAppearance="@style/TextAppearance.Urbanfix.Title"
-            android:textSize="24sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="@string/issue_form_category_road"
             android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
 
@@ -55,6 +48,27 @@
                 android:inputType="textEmailAddress"
                 android:minHeight="52dp"
                 android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutIssueUserDisplayName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/profile_name_label"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editIssueUserDisplayName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:focusable="false"
+                android:inputType="textPersonName|textCapWords"
+                android:minHeight="52dp"
+                android:textSize="18sp"
+                tools:text="Jan Kowalski" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

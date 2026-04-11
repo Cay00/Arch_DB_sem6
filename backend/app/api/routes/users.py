@@ -11,6 +11,31 @@ from app.schemas.user import UserPublic, UserSyncRequest
 router = APIRouter(prefix="/users", tags=["users"])
 
 
+def _display_from_names(first: str, last: str, email: str) -> str:
+    full = f"{first.strip()} {last.strip()}".strip()
+    return full or email.split("@", 1)[0]
+
+
+def _account_type_for_insert(payload: UserSyncRequest) -> str:
+    if payload.account_type in ("citizen", "official"):
+        return payload.account_type
+    return "citizen"
+
+
+def _apply_optional_names(user: User, payload: UserSyncRequest) -> None:
+    """Uzupełnia imię/nazwisko i display_name, jeśli klient przesłał niepuste wartości (logowanie bez pól nie czyści danych)."""
+    fn = (payload.first_name or "").strip()
+    ln = (payload.last_name or "").strip()
+    if fn:
+        user.first_name = fn
+    if ln:
+        user.last_name = ln
+    if fn or ln:
+        user.display_name = _display_from_names(user.first_name, user.last_name, user.email)
+    elif not user.display_name.strip():
+        user.display_name = user.email.split("@", 1)[0]
+
+
 @router.post("", response_model=UserPublic)
 def sync_user(
     payload: UserSyncRequest,
@@ -41,8 +66,7 @@ def sync_user(
             user.firebase_uid = uid
         if pw_plain:
             user.hashed_password = hash_password(pw_plain)
-        if not user.display_name.strip():
-            user.display_name = payload.email.split("@")[0]
+        _apply_optional_names(user, payload)
         db.commit()
         db.refresh(user)
         response.status_code = status.HTTP_200_OK
@@ -54,11 +78,16 @@ def sync_user(
             detail="Nowe konto wymaga firebase_uid lub hasła (password_hash).",
         )
 
+    fn = (payload.first_name or "").strip()
+    ln = (payload.last_name or "").strip()
     user = User(
         email=payload.email,
         firebase_uid=uid,
         hashed_password=hash_password(pw_plain) if pw_plain else None,
-        display_name=payload.email.split("@")[0],
+        first_name=fn,
+        last_name=ln,
+        display_name=_display_from_names(fn, ln, payload.email),
+        account_type=_account_type_for_insert(payload),
     )
     db.add(user)
     try:

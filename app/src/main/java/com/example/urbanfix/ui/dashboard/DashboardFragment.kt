@@ -1,12 +1,16 @@
 package com.example.urbanfix.ui.dashboard
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.setPadding
+import androidx.core.os.bundleOf
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentDashboardBinding
 import com.google.android.material.card.MaterialCardView
@@ -49,12 +53,14 @@ class DashboardFragment : Fragment() {
         setLoading(true)
         Thread {
             runCatching {
-                val userId = fetchCurrentUserId(email)
-                fetchIssues(userId)
-            }.onSuccess { issues ->
+                val userJson = fetchCurrentUser(email)
+                val official = userJson.optString("account_type", "").lowercase() == "official"
+                val issues = fetchIssues(userJson, email, official)
+                issues to official
+            }.onSuccess { (issues, official) ->
                 requireActivity().runOnUiThread {
                     setLoading(false)
-                    renderIssues(issues)
+                    renderIssues(issues, official)
                 }
             }.onFailure {
                 requireActivity().runOnUiThread {
@@ -66,7 +72,7 @@ class DashboardFragment : Fragment() {
         }.start()
     }
 
-    private fun fetchCurrentUserId(email: String): Int {
+    private fun fetchCurrentUser(email: String): JSONObject {
         val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
         val connection = (URL("${backendBaseUrl()}/users/by-email?email=$encodedEmail").openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
@@ -78,14 +84,20 @@ class DashboardFragment : Fragment() {
                 throw IllegalStateException("User lookup failed")
             }
             val body = connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-            JSONObject(body).getInt("id")
+            JSONObject(body)
         } finally {
             connection.disconnect()
         }
     }
 
-    private fun fetchIssues(userId: Int): JSONArray {
-        val connection = (URL("${backendBaseUrl()}/issues?user_id=$userId").openConnection() as HttpURLConnection).apply {
+    private fun fetchIssues(userJson: JSONObject, email: String, isOfficial: Boolean): JSONArray {
+        val urlString = if (isOfficial) {
+            val enc = URLEncoder.encode(email, Charsets.UTF_8.name())
+            "${backendBaseUrl()}/issues?official_email=$enc"
+        } else {
+            "${backendBaseUrl()}/issues?user_id=${userJson.getInt("id")}"
+        }
+        val connection = (URL(urlString).openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
             connectTimeout = 5000
             readTimeout = 5000
@@ -101,7 +113,7 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun renderIssues(issues: JSONArray) {
+    private fun renderIssues(issues: JSONArray, isOfficial: Boolean) {
         binding.issuesContainer.removeAllViews()
         if (issues.length() == 0) {
             binding.textIssuesEmpty.visibility = View.VISIBLE
@@ -112,41 +124,93 @@ class DashboardFragment : Fragment() {
         binding.textIssuesEmpty.visibility = View.GONE
         for (i in 0 until issues.length()) {
             val issue = issues.getJSONObject(i)
-            binding.issuesContainer.addView(createIssueCard(issue))
+            binding.issuesContainer.addView(createIssueCard(issue, isOfficial))
         }
     }
 
-    private fun createIssueCard(issue: JSONObject): View {
+    private fun createIssueCard(issue: JSONObject, isOfficial: Boolean): View {
         val context = requireContext()
+        val res = resources
+        val padH = res.getDimensionPixelSize(R.dimen.issue_list_card_content_padding_horizontal)
+        val padT = res.getDimensionPixelSize(R.dimen.issue_list_card_content_padding_top)
+        val padB = res.getDimensionPixelSize(R.dimen.issue_list_card_content_padding_bottom)
+        val gapStatusTitle = res.getDimensionPixelSize(R.dimen.issue_list_card_gap_status_to_title)
+        val gapTitleBody = res.getDimensionPixelSize(R.dimen.issue_list_card_gap_title_to_body)
+        val cornerRadius = res.getDimension(R.dimen.home_issue_tile_corner_radius)
+        val elevation = res.getDimension(R.dimen.home_issue_tile_elevation)
+        val strokePx = res.getDimensionPixelSize(R.dimen.home_issue_tile_stroke_width)
+        val cardSpacingBottom = res.getDimensionPixelSize(R.dimen.issue_list_card_margin_bottom)
+
         val card = MaterialCardView(context).apply {
-            radius = 16f
-            cardElevation = 2f
+            radius = cornerRadius
+            cardElevation = elevation
+            strokeWidth = strokePx
+            strokeColor = context.getColor(R.color.home_tile_stroke)
             useCompatPadding = true
-            setContentPadding(24, 24, 24, 24)
+            setContentPadding(padH, padT, padH, padB)
             layoutParams = ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.WRAP_CONTENT,
             ).apply {
-                bottomMargin = 12
+                bottomMargin = cardSpacingBottom
             }
         }
 
-        val text = TextView(context).apply {
-            text = buildString {
-                append(issue.optString("title"))
-                append("\n")
-                append("Status: ${issue.optString("status")}")
-                append("\n")
-                append("Kategoria: ${issue.optString("category")}")
-                append("\n")
-                append("Lokalizacja: ${issue.optString("location")}")
-                append("\n")
-                append(issue.optString("description"))
-            }
-            textSize = 18f
-            setPadding(8)
+        val inner = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
         }
-        card.addView(text)
+
+        val lpMatch = ViewGroup.LayoutParams.MATCH_PARENT
+        val lpWrap = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        val statusText = issue.optString("status").ifBlank { getString(R.string.profile_dash) }
+        inner.addView(
+            TextView(context).apply {
+                text = getString(R.string.issue_card_status, statusText)
+                TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Label)
+                setTypeface(null, Typeface.BOLD)
+            },
+            LinearLayout.LayoutParams(lpMatch, lpWrap),
+        )
+        inner.addView(
+            TextView(context).apply {
+                text = issue.optString("title")
+                TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Subtitle)
+                setTypeface(null, Typeface.BOLD)
+            },
+            LinearLayout.LayoutParams(lpMatch, lpWrap).apply { topMargin = gapStatusTitle },
+        )
+        inner.addView(
+            TextView(context).apply {
+                text = buildString {
+                    append("Kategoria: ${issue.optString("category")}")
+                    append("\n")
+                    append("Lokalizacja: ${issue.optString("location")}")
+                    append("\n\n")
+                    append(issue.optString("description"))
+                }
+                TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_BodySecondary)
+            },
+            LinearLayout.LayoutParams(lpMatch, lpWrap).apply { topMargin = gapTitleBody },
+        )
+        card.addView(inner)
+        if (isOfficial) {
+            val issueId = issue.optInt("id", -1)
+            if (issueId >= 0) {
+                card.isClickable = true
+                card.isFocusable = true
+                card.setOnClickListener {
+                    findNavController().navigate(
+                        R.id.action_navigation_dashboard_to_navigation_issue_detail,
+                        bundleOf("issueId" to issueId),
+                    )
+                }
+            }
+        }
         return card
     }
 
