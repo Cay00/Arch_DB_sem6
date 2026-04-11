@@ -14,20 +14,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:paddingTop="16dp"
+        android:paddingTop="12dp"
         android:paddingBottom="8dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/issue_form_title"
-            android:textAppearance="@style/TextAppearance.Urbanfix.Title"
-            android:textSize="24sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="@string/issue_form_category_road"
             android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
 

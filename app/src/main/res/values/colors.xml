@@ -12,7 +12,5 @@
     <color name="bottom_nav_ripple_fill">#26E65100</color>
     <!-- Kafelki home: obrys i tło ikony -->
     <color name="home_tile_stroke">#14000000</color>
-    <!-- Obrys kart zgłoszeń — ten sam ciepły bursztyn / żółć co akcenty (purple_200, teal_200) -->
-    <color name="issue_card_stroke">#CCFFB74D</color>
     <color name="home_tile_icon_scrim">#18E65100</color>
 </resources>

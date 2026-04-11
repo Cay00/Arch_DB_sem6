@@ -86,7 +86,7 @@ class IssueDetailFragment : Fragment() {
                 }
                 bindIssue(finalIssue)
                 if (official) {
-                    binding.groupOfficialStatusEdit.visibility = View.VISIBLE
+                    binding.cardOfficialActions.visibility = View.VISIBLE
                     val current = finalIssue.optString("status", statuses.firstOrNull().orEmpty())
                     val idx = statuses.indexOf(current).coerceAtLeast(0)
                     binding.dropdownIssueStatus.setText(statuses.getOrNull(idx).orEmpty(), false)
@@ -94,7 +94,7 @@ class IssueDetailFragment : Fragment() {
                         saveStatus(issueId, viewerEmail, statuses)
                     }
                 } else {
-                    binding.groupOfficialStatusEdit.visibility = View.GONE
+                    binding.cardOfficialActions.visibility = View.GONE
                 }
             }
         }

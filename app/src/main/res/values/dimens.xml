@@ -19,4 +19,11 @@
     <dimen name="issue_list_card_margin_bottom">10dp</dimen>
     <dimen name="issue_list_container_padding_bottom">8dp</dimen>
     <dimen name="dashboard_content_top_spacing">24dp</dimen>
+    <!-- Szczegóły zgłoszenia (ekran) -->
+    <dimen name="issue_detail_screen_padding_h">16dp</dimen>
+    <dimen name="issue_detail_screen_padding_v">16dp</dimen>
+    <dimen name="issue_detail_card_margin_bottom">12dp</dimen>
+    <dimen name="issue_detail_section_margin_top">16dp</dimen>
+    <dimen name="issue_detail_label_to_value_gap">6dp</dimen>
+    <dimen name="issue_detail_title_margin_top">10dp</dimen>
 </resources>

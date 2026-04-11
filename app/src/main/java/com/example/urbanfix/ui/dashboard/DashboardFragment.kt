@@ -60,11 +60,6 @@ class DashboardFragment : Fragment() {
             }.onSuccess { (issues, official) ->
                 requireActivity().runOnUiThread {
                     setLoading(false)
-                    binding.textDashboardTitle.text = if (official) {
-                        getString(R.string.official_issues_title)
-                    } else {
-                        getString(R.string.my_issues_title)
-                    }
                     renderIssues(issues, official)
                 }
             }.onFailure {

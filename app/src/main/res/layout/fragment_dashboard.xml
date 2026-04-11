@@ -4,17 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingHorizontal="16dp"
-    android:paddingTop="16dp"
+    android:paddingTop="12dp"
     android:paddingBottom="16dp">
-
-    <TextView
-        android:id="@+id/textDashboardTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/my_issues_title"
-        android:textAppearance="@style/TextAppearance.Urbanfix.Title"
-        android:textSize="22sp" />
 
     <ProgressBar
         android:id="@+id/progressIssues"
@@ -37,8 +28,10 @@
         android:id="@+id/issuesScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dashboard_content_top_spacing"
-        android:layout_weight="1">
+        android:layout_marginTop="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/issuesContainer"
