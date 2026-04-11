@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
@@ -36,6 +39,7 @@ class AuthFragment : Fragment() {
             goToHome()
             return
         }
+        applyStatusBarPadding()
         applyModeUi()
         binding.buttonSubmit.setOnClickListener { submit() }
         binding.textSwitchMode.setOnClickListener {
@@ -44,26 +48,61 @@ class AuthFragment : Fragment() {
         }
     }
 
+    private fun applyStatusBarPadding() {
+        val baseTop = resources.getDimensionPixelSize(R.dimen.auth_padding_top_base)
+        val horizontal = resources.getDimensionPixelSize(R.dimen.auth_padding_horizontal)
+        val bottom = resources.getDimensionPixelSize(R.dimen.auth_padding_bottom)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.authScroll) { _, windowInsets ->
+            val status = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+            binding.authContent.updatePadding(
+                left = horizontal,
+                top = baseTop + status.top,
+                right = horizontal,
+                bottom = bottom,
+            )
+            windowInsets
+        }
+        ViewCompat.requestApplyInsets(binding.authScroll)
+    }
+
     private fun applyModeUi() {
         if (isRegisterMode) {
             binding.textAuthHeading.setText(R.string.auth_heading_register)
             binding.textAuthSubtitle.setText(R.string.auth_subtitle_register)
             binding.buttonSubmit.setText(R.string.auth_action_register)
             binding.textSwitchMode.setText(R.string.auth_switch_to_login)
+            binding.groupRegisterFields.visibility = View.VISIBLE
         } else {
             binding.textAuthHeading.setText(R.string.auth_heading_login)
             binding.textAuthSubtitle.setText(R.string.auth_subtitle_login)
             binding.buttonSubmit.setText(R.string.auth_action_login)
             binding.textSwitchMode.setText(R.string.auth_switch_to_register)
+            binding.groupRegisterFields.visibility = View.GONE
         }
         binding.inputLayoutEmail.error = null
         binding.inputLayoutPassword.error = null
+        binding.inputLayoutFirstName.error = null
+        binding.inputLayoutLastName.error = null
     }
 
     private fun submit() {
         val email = binding.editEmail.text?.toString()?.trim().orEmpty()
         val password = binding.editPassword.text?.toString().orEmpty()
         var valid = true
+        binding.inputLayoutFirstName.error = null
+        binding.inputLayoutLastName.error = null
+        if (isRegisterMode) {
+            val firstName = binding.editFirstName.text?.toString()?.trim().orEmpty()
+            val lastName = binding.editLastName.text?.toString()?.trim().orEmpty()
+            if (firstName.isEmpty()) {
+                binding.inputLayoutFirstName.error = getString(R.string.auth_error_first_name_required)
+                valid = false
+            }
+            if (lastName.isEmpty()) {
+                binding.inputLayoutLastName.error = getString(R.string.auth_error_last_name_required)
+                valid = false
+            }
+        }
         if (email.isEmpty()) {
             binding.inputLayoutEmail.error = getString(R.string.auth_error_email_required)
             valid = false
@@ -109,6 +148,9 @@ class AuthFragment : Fragment() {
         binding.textSwitchMode.isClickable = !loading
         binding.editEmail.isEnabled = !loading
         binding.editPassword.isEnabled = !loading
+        binding.switchAccountType.isEnabled = !loading
+        binding.editFirstName.isEnabled = !loading
+        binding.editLastName.isEnabled = !loading
     }
 
     private fun pushUserToBackendThenNavigate(email: String, password: String) {

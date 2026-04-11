@@ -18,9 +18,17 @@
     <string name="auth_action_register">Zarejestruj się</string>
     <string name="auth_switch_to_register">Nie masz konta? Zarejestruj się</string>
     <string name="auth_switch_to_login">Masz już konto? Zaloguj się</string>
+    <string name="auth_account_type_label">Typ konta</string>
+    <string name="auth_account_type_citizen">Citizen</string>
+    <string name="auth_account_type_official">Official</string>
+    <string name="auth_account_type_cd">Przełącz między Citizen a Official</string>
+    <string name="auth_hint_first_name">Imię</string>
+    <string name="auth_hint_last_name">Nazwisko</string>
     <string name="auth_error_email_required">Podaj e-mail</string>
     <string name="auth_error_password_required">Podaj hasło</string>
     <string name="auth_error_password_short">Hasło musi mieć co najmniej 6 znaków</string>
+    <string name="auth_error_first_name_required">Podaj imię</string>
+    <string name="auth_error_last_name_required">Podaj nazwisko</string>
     <string name="auth_error_generic">Nie udało się. Spróbuj ponownie.</string>
     <string name="auth_backend_sync_failed">Firebase OK, ale zapis do backendu nieudany: %1$s</string>
 
