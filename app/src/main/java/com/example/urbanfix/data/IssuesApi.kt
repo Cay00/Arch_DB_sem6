@@ -30,6 +30,31 @@ object IssuesApi {
         }
     }
 
+    fun postVote(baseUrl: String, issueId: Int, userId: Int, value: Int): JSONObject {
+        val normalized = baseUrl.trimEnd('/')
+        val url = URL("$normalized/issues/$issueId/vote")
+        val c = (url.openConnection() as HttpURLConnection).apply {
+            requestMethod = "POST"
+            connectTimeout = 15_000
+            readTimeout = 15_000
+            doOutput = true
+            setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+        }
+        val payload = JSONObject().put("user_id", userId).put("value", value)
+        return try {
+            OutputStreamWriter(c.outputStream, Charsets.UTF_8).use { it.write(payload.toString()) }
+            val code = c.responseCode
+            val body = (if (code in 200..299) c.inputStream else c.errorStream)
+                ?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }.orEmpty()
+            if (code != HttpURLConnection.HTTP_OK) {
+                error("HTTP $code: ${body.take(400)}")
+            }
+            JSONObject(body)
+        } finally {
+            c.disconnect()
+        }
+    }
+
     fun patchIssueStatus(
         baseUrl: String,
         issueId: Int,

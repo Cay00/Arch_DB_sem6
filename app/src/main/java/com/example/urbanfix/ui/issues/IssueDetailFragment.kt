@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
@@ -25,6 +26,8 @@ class IssueDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val io = Executors.newSingleThreadExecutor()
+
+    private var detailViewerUserId: Int = -1
 
     private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
 
@@ -67,8 +70,10 @@ class IssueDetailFragment : Fragment() {
             var official = false
             var issueJson: JSONObject? = null
             var err: String? = null
+            var viewerId = -1
             try {
                 val userJson = UsersApi.getUserByEmail(base, viewerEmail)
+                viewerId = userJson.optInt("id", -1)
                 val at = userJson.optString("account_type", "").lowercase()
                 official = at == "official"
                 issueJson = IssuesApi.getIssue(base, issueId, viewerEmail)
@@ -77,6 +82,7 @@ class IssueDetailFragment : Fragment() {
             }
             val finalIssue = issueJson
             val finalErr = err
+            val finalViewerId = viewerId
             activity?.runOnUiThread {
                 if (finalIssue == null) {
                     Snackbar.make(
@@ -87,6 +93,7 @@ class IssueDetailFragment : Fragment() {
                     findNavController().navigateUp()
                     return@runOnUiThread
                 }
+                detailViewerUserId = finalViewerId
                 bindIssue(finalIssue)
                 if (official) {
                     binding.cardOfficialActions.visibility = View.VISIBLE
@@ -106,11 +113,14 @@ class IssueDetailFragment : Fragment() {
     private fun bindIssue(j: JSONObject) {
         val id = j.optInt("id", -1)
         binding.textIssueId.text = getString(R.string.issue_detail_label_id) + ": $id"
-        binding.textIssueTitle.text = j.optString("title")
+        val plainTitle = j.optString("title").trim().ifEmpty { getString(R.string.profile_dash) }
+        binding.textIssueTitle.text = plainTitle
+        (activity as? AppCompatActivity)?.supportActionBar?.title = plainTitle
         binding.textIssueDescription.text = j.optString("description").ifEmpty { "—" }
         bindIssuePhoto(j.optString("image_url", "").trim())
         binding.textIssueCategory.text = j.optString("category").ifEmpty { "—" }
         binding.textIssueStatus.text = j.optString("status").ifEmpty { "—" }
+        binding.textIssueVoteCount.text = j.optInt("vote_count", 0).toString()
         binding.textIssueLocation.text = j.optString("location").ifEmpty { "—" }
         val created = j.optString("created_at", "")
         binding.textIssueCreated.text = if (created.contains("T")) {
@@ -119,6 +129,50 @@ class IssueDetailFragment : Fragment() {
             created.ifEmpty { "—" }
         }
         binding.textIssueUserId.text = j.optInt("user_id", -1).takeIf { it >= 0 }?.toString() ?: "—"
+        bindVoteButtons(j)
+    }
+
+    private fun bindVoteButtons(j: JSONObject) {
+        val issueId = arguments?.getInt("issueId") ?: -1
+        val uid = detailViewerUserId
+        val hasVoted = j.has("viewer_vote") && !j.isNull("viewer_vote")
+        val canVote = uid >= 0 && issueId >= 0
+        binding.rowIssueVote.visibility = if (canVote) View.VISIBLE else View.GONE
+        if (!canVote) return
+        binding.buttonVotePlus.isEnabled = !hasVoted
+        binding.buttonVoteMinus.isEnabled = !hasVoted
+        binding.buttonVotePlus.setOnClickListener {
+            submitDetailVote(issueId, uid, 1, j)
+        }
+        binding.buttonVoteMinus.setOnClickListener {
+            submitDetailVote(issueId, uid, -1, j)
+        }
+    }
+
+    private fun submitDetailVote(issueId: Int, userId: Int, delta: Int, snapshot: JSONObject) {
+        val before = JSONObject(snapshot.toString())
+        val optimistic = JSONObject(snapshot.toString())
+        optimistic.put("vote_count", snapshot.optInt("vote_count", 0) + delta)
+        optimistic.put("viewer_vote", delta)
+        bindIssue(optimistic)
+        binding.buttonVotePlus.isEnabled = false
+        binding.buttonVoteMinus.isEnabled = false
+        val base = backendBaseUrl()
+        io.execute {
+            try {
+                val updated = IssuesApi.postVote(base, issueId, userId, delta)
+                activity?.runOnUiThread {
+                    if (!isAdded) return@runOnUiThread
+                    bindIssue(updated)
+                }
+            } catch (_: Exception) {
+                activity?.runOnUiThread {
+                    if (!isAdded) return@runOnUiThread
+                    bindIssue(before)
+                    Snackbar.make(binding.root, R.string.issue_vote_error, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun bindIssuePhoto(rawUrl: String) {
