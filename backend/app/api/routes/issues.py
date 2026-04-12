@@ -1,12 +1,14 @@
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
+from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.core.config import settings
 from app.core.issue_status import DEFAULT_ON_CREATE
+from app.core.media import save_issue_upload
 from app.models.issue import Issue
 from app.models.user import User
 from app.schemas.issue import IssueCreate, IssuePublic, IssueStatusUpdate
@@ -32,7 +34,27 @@ def _list_all_issues(db: Session) -> list[Issue]:
 
 
 @router.post("", response_model=IssuePublic, status_code=status.HTTP_201_CREATED)
-def create_issue(payload: IssueCreate, db: Session = Depends(get_db)) -> Issue:
+def create_issue(
+    title: str = Form(...),
+    description: str = Form(...),
+    category: str = Form(...),
+    location: str = Form(...),
+    user_id: int = Form(...),
+    image: UploadFile | None = File(None),
+    db: Session = Depends(get_db),
+) -> Issue:
+    """Tworzenie zgłoszenia (multipart/form-data — zgodnie z aplikacją mobilną, pole pliku ``image`` opcjonalne)."""
+    try:
+        payload = IssueCreate(
+            title=title.strip(),
+            description=description.strip(),
+            category=category.strip(),
+            location=location.strip(),
+            user_id=user_id,
+        )
+    except ValidationError as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=e.errors())
+
     user = db.get(User, payload.user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nie znaleziono użytkownika.")
@@ -46,6 +68,15 @@ def create_issue(payload: IssueCreate, db: Session = Depends(get_db)) -> Issue:
         user_id=payload.user_id,
     )
     db.add(issue)
+    db.flush()
+
+    if image is not None and (image.filename or "").strip():
+        try:
+            issue.image_path = save_issue_upload(issue.id, image)
+        except ValueError as e:
+            db.rollback()
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+
     db.commit()
     db.refresh(issue)
     return issue
@@ -68,7 +99,7 @@ def list_issues(
 
     - `user_id` — zgłoszenia mieszkańca,
     - `official_email` — po weryfikacji konta Official, wszystkie zgłoszenia,
-    - `issues_list_secret` — gdy w konfiguracji ustawiono `ISSUES_LIST_SECRET`, pełna lista dla integracji,
+    - `issues_list_secret` — gdy w konfiguracji ustawiono `ISSUES_LIST_SECRET`, pełna lista dla integracji (JSON z polem `image_url` przy zgłoszeniu ze zdjęciem),
     - w `ENV=development` (bez zmiany domyślnej) samo `GET /issues` zwraca pełną listę (wygoda /docs),
     - w produkcji bez powyższych parametrów: 422.
     """

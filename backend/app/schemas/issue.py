@@ -27,6 +27,8 @@ class IssuePublic(BaseModel):
     status: str = Field(max_length=32)
     location: str
     user_id: int
+    #: Publiczny URL zdjęcia (wg ``API_PUBLIC_BASE_URL``) lub ścieżka ``/uploads/...`` — pole w odpowiedzi ``GET /issues`` (webhook).
+    image_url: str | None = None
     created_at: datetime
 
 

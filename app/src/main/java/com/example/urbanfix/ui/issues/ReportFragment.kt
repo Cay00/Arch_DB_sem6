@@ -73,8 +73,13 @@ class ReportFragment : Fragment() {
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            photoUri = it
             photoFile = copyUriToCache(it)
+            // Podgląd z pliku w cache (FileProvider) — unikamy błędów w logcat przy setImageURI(content://…).
+            photoUri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                photoFile!!,
+            )
             showPhotoPreview()
         }
     }

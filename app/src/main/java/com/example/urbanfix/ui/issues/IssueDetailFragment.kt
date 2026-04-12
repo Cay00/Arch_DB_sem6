@@ -13,6 +13,9 @@ import com.example.urbanfix.data.UsersApi
 import com.example.urbanfix.databinding.FragmentIssueDetailBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import coil.load
+import coil.request.ErrorResult
+import coil.request.ImageRequest
 import org.json.JSONObject
 import java.util.concurrent.Executors
 
@@ -105,6 +108,7 @@ class IssueDetailFragment : Fragment() {
         binding.textIssueId.text = getString(R.string.issue_detail_label_id) + ": $id"
         binding.textIssueTitle.text = j.optString("title")
         binding.textIssueDescription.text = j.optString("description").ifEmpty { "—" }
+        bindIssuePhoto(j.optString("image_url", "").trim())
         binding.textIssueCategory.text = j.optString("category").ifEmpty { "—" }
         binding.textIssueStatus.text = j.optString("status").ifEmpty { "—" }
         binding.textIssueLocation.text = j.optString("location").ifEmpty { "—" }
@@ -115,6 +119,38 @@ class IssueDetailFragment : Fragment() {
             created.ifEmpty { "—" }
         }
         binding.textIssueUserId.text = j.optInt("user_id", -1).takeIf { it >= 0 }?.toString() ?: "—"
+    }
+
+    private fun bindIssuePhoto(rawUrl: String) {
+        if (rawUrl.isEmpty() || rawUrl.equals("null", ignoreCase = true)) {
+            binding.imageIssuePhoto.visibility = View.GONE
+            binding.imageIssuePhoto.setImageDrawable(null)
+            return
+        }
+        val url = resolveIssueImageUrl(rawUrl)
+        binding.imageIssuePhoto.visibility = View.VISIBLE
+        binding.imageIssuePhoto.load(url) {
+            lifecycle(viewLifecycleOwner)
+            crossfade(true)
+            listener(
+                onError = { _: ImageRequest, _: ErrorResult ->
+                    if (!isAdded) return@listener
+                    _binding?.let { b ->
+                        b.imageIssuePhoto.visibility = View.GONE
+                        b.imageIssuePhoto.setImageDrawable(null)
+                    }
+                },
+            )
+        }
+    }
+
+    private fun resolveIssueImageUrl(raw: String): String {
+        if (raw.startsWith("http://", ignoreCase = true) || raw.startsWith("https://", ignoreCase = true)) {
+            return raw
+        }
+        val base = backendBaseUrl().trimEnd('/')
+        val path = if (raw.startsWith("/")) raw else "/$raw"
+        return base + path
     }
 
     private fun saveStatus(issueId: Int, actorEmail: String, statuses: List<String>) {

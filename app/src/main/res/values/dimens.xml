@@ -26,4 +26,5 @@
     <dimen name="issue_detail_section_margin_top">16dp</dimen>
     <dimen name="issue_detail_label_to_value_gap">6dp</dimen>
     <dimen name="issue_detail_title_margin_top">10dp</dimen>
+    <dimen name="issue_detail_image_max_height">280dp</dimen>
 </resources>

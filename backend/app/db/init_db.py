@@ -47,6 +47,21 @@ def _ensure_user_account_type_column() -> None:
             )
 
 
+def _ensure_issue_image_path_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("issues"):
+        return
+    cols = {c["name"] for c in insp.get_columns("issues")}
+    if "image_path" in cols:
+        return
+    is_sqlite = engine.dialect.name == "sqlite"
+    with engine.begin() as conn:
+        if is_sqlite:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN image_path VARCHAR(512)"))
+        else:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN image_path VARCHAR(512)"))
+
+
 def _migrate_issue_status_legacy() -> None:
     """Stare zgłoszenia NEW → Zgłoszone."""
     insp = inspect(engine)
@@ -60,4 +75,5 @@ def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_user_name_columns()
     _ensure_user_account_type_column()
+    _ensure_issue_image_path_column()
     _migrate_issue_status_legacy()

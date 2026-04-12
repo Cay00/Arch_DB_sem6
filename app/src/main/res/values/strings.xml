@@ -56,6 +56,7 @@
     <string name="issue_detail_label_id">ID</string>
     <string name="issue_detail_label_title">Tytuł</string>
     <string name="issue_detail_label_description">Opis</string>
+    <string name="issue_detail_image_content_description">Zdjęcie zgłoszenia</string>
     <string name="issue_detail_label_category">Kategoria</string>
     <string name="issue_detail_label_status">Status</string>
     <string name="issue_detail_label_location">Lokalizacja</string>
