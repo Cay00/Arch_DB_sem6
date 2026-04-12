@@ -24,3 +24,4 @@ class User(Base):
     )
 
     issues: Mapped[list["Issue"]] = relationship("Issue", back_populates="user")
+    issue_votes: Mapped[list["IssueVote"]] = relationship("IssueVote", back_populates="user")

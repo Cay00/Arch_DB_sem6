@@ -27,6 +27,7 @@ class Issue(Base):
     )
 
     user: Mapped["User"] = relationship("User", back_populates="issues")
+    votes: Mapped[list["IssueVote"]] = relationship("IssueVote", back_populates="issue", cascade="all, delete-orphan")
 
     @property
     def image_url(self) -> str | None:

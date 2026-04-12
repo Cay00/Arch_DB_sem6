@@ -5,6 +5,12 @@
     <string name="app_name">urbanfix</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Zgłoszenia</string>
+    <string name="dashboard_tab_mine">Moje</string>
+    <string name="dashboard_tab_community">Społeczność</string>
+    <string name="dashboard_community_empty">Brak zgłoszeń w statusie Zgłoszone.</string>
+    <string name="issue_vote_plus_cd">Głos za</string>
+    <string name="issue_vote_minus_cd">Głos przeciw</string>
+    <string name="issue_vote_error">Nie udało się zapisać głosu.</string>
     <string name="title_profile">Mój profil</string>
 
     <string name="title_auth">Konto</string>

@@ -103,13 +103,51 @@
                     android:text="@string/issue_detail_label_vote_count"
                     android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
 
-                <TextView
-                    android:id="@+id/text_issue_vote_count"
+                <LinearLayout
+                    android:id="@+id/row_issue_vote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                    tools:text="0" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_vote_minus"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/issue_vote_minus_cd"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minHeight="48dp"
+                        android:text="−"
+                        android:textSize="20sp"
+                        app:cornerRadius="@dimen/home_issue_tile_corner_radius" />
+
+                    <TextView
+                        android:id="@+id/text_issue_vote_count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                        android:textSize="20sp"
+                        tools:text="0" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_vote_plus"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/issue_vote_plus_cd"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:minHeight="48dp"
+                        android:text="+"
+                        android:textSize="20sp"
+                        app:cornerRadius="@dimen/home_issue_tile_corner_radius" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"

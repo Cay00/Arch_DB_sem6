@@ -73,6 +73,48 @@ def _ensure_issue_image_path_column() -> None:
             conn.execute(text("ALTER TABLE issues ADD COLUMN image_path VARCHAR(512)"))
 
 
+def _ensure_issue_votes_table() -> None:
+    insp = inspect(engine)
+    if insp.has_table("issue_votes"):
+        return
+    is_sqlite = engine.dialect.name == "sqlite"
+    with engine.begin() as conn:
+        if is_sqlite:
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE issue_votes (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        issue_id INTEGER NOT NULL,
+                        user_id INTEGER NOT NULL,
+                        value INTEGER NOT NULL,
+                        CONSTRAINT fk_issue_votes_issue FOREIGN KEY (issue_id) REFERENCES issues (id) ON DELETE CASCADE,
+                        CONSTRAINT fk_issue_votes_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+                        CONSTRAINT uq_issue_vote_user UNIQUE (issue_id, user_id)
+                    )
+                    """
+                )
+            )
+            conn.execute(text("CREATE INDEX ix_issue_votes_issue_id ON issue_votes (issue_id)"))
+            conn.execute(text("CREATE INDEX ix_issue_votes_user_id ON issue_votes (user_id)"))
+        else:
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE issue_votes (
+                        id SERIAL PRIMARY KEY,
+                        issue_id INTEGER NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        value INTEGER NOT NULL,
+                        CONSTRAINT uq_issue_vote_user UNIQUE (issue_id, user_id)
+                    )
+                    """
+                )
+            )
+            conn.execute(text("CREATE INDEX ix_issue_votes_issue_id ON issue_votes (issue_id)"))
+            conn.execute(text("CREATE INDEX ix_issue_votes_user_id ON issue_votes (user_id)"))
+
+
 def _migrate_issue_status_legacy() -> None:
     """Stare zgłoszenia NEW → Zgłoszone."""
     insp = inspect(engine)
@@ -88,4 +130,5 @@ def init_db() -> None:
     _ensure_user_account_type_column()
     _ensure_issue_image_path_column()
     _ensure_issue_vote_count_column()
+    _ensure_issue_votes_table()
     _migrate_issue_status_legacy()
