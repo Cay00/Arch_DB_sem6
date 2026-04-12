@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
@@ -105,12 +106,16 @@ class IssueDetailFragment : Fragment() {
 
     private fun bindIssue(j: JSONObject) {
         val id = j.optInt("id", -1)
+        val votes = j.optInt("vote_count", 0)
         binding.textIssueId.text = getString(R.string.issue_detail_label_id) + ": $id"
-        binding.textIssueTitle.text = j.optString("title")
+        val plainTitle = j.optString("title").trim().ifEmpty { getString(R.string.profile_dash) }
+        binding.textIssueTitle.text = plainTitle
+        (activity as? AppCompatActivity)?.supportActionBar?.title = plainTitle
         binding.textIssueDescription.text = j.optString("description").ifEmpty { "—" }
         bindIssuePhoto(j.optString("image_url", "").trim())
         binding.textIssueCategory.text = j.optString("category").ifEmpty { "—" }
         binding.textIssueStatus.text = j.optString("status").ifEmpty { "—" }
+        binding.textIssueVoteCount.text = communityVotesSummary(requireContext(), votes)
         binding.textIssueLocation.text = j.optString("location").ifEmpty { "—" }
         val created = j.optString("created_at", "")
         binding.textIssueCreated.text = if (created.contains("T")) {

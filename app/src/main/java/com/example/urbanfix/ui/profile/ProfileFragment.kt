@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
+import com.example.urbanfix.ui.issues.issueTileBodyAfterTitle
 import com.example.urbanfix.data.BackendUserJson
 import com.example.urbanfix.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -157,8 +158,22 @@ class ProfileFragment : Fragment() {
             )
             block.addView(
                 TextView(ctx).apply {
-                    text = issue.optString("title")
+                    text = issue.optString("title").trim().ifEmpty { getString(R.string.profile_dash) }
                     textSize = 17f
+                    setTypeface(null, Typeface.BOLD)
+                    setPadding(0, (4 * density).toInt(), 0, 0)
+                },
+            )
+            block.addView(
+                TextView(ctx).apply {
+                    text = issueTileBodyAfterTitle(
+                        ctx,
+                        issue.optString("category"),
+                        issue.optString("location"),
+                        issue.optString("description"),
+                        issue.optInt("vote_count", 0),
+                    )
+                    textSize = 14f
                     setPadding(0, (4 * density).toInt(), 0, 0)
                 },
             )

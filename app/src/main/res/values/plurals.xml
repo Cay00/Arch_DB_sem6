@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="issue_community_votes_suffix">
+        <item quantity="zero">%d głosów społeczności</item>
+        <item quantity="one">%d głos społeczności</item>
+        <item quantity="few">%d głosy społeczności</item>
+        <item quantity="many">%d głosów społeczności</item>
+        <item quantity="other">%d głosów społeczności</item>
+    </plurals>
+</resources>

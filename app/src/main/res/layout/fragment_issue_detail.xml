@@ -55,21 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:text="@string/issue_detail_label_description"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
-
-                <TextView
-                    android:id="@+id/text_issue_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                    tools:text="Opis" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
                     android:text="@string/issue_detail_label_category"
                     android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
 
@@ -110,6 +95,36 @@
                     android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
                     android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
                     tools:text="ul. Przykładowa 1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_vote_count"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_vote_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="0" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    android:text="@string/issue_detail_label_description"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+
+                <TextView
+                    android:id="@+id/text_issue_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="Opis" />
 
                 <TextView
                     android:layout_width="match_parent"

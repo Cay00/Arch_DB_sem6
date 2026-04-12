@@ -47,6 +47,17 @@ def _ensure_user_account_type_column() -> None:
             )
 
 
+def _ensure_issue_vote_count_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("issues"):
+        return
+    cols = {c["name"] for c in insp.get_columns("issues")}
+    if "vote_count" in cols:
+        return
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE issues ADD COLUMN vote_count INTEGER NOT NULL DEFAULT 0"))
+
+
 def _ensure_issue_image_path_column() -> None:
     insp = inspect(engine)
     if not insp.has_table("issues"):
@@ -76,4 +87,5 @@ def init_db() -> None:
     _ensure_user_name_columns()
     _ensure_user_account_type_column()
     _ensure_issue_image_path_column()
+    _ensure_issue_vote_count_column()
     _migrate_issue_status_legacy()

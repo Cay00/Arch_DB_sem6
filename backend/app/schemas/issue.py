@@ -29,6 +29,8 @@ class IssuePublic(BaseModel):
     user_id: int
     #: Publiczny URL zdjęcia (wg ``API_PUBLIC_BASE_URL``) lub ścieżka ``/uploads/...`` — pole w odpowiedzi ``GET /issues`` (webhook).
     image_url: str | None = None
+    #: Liczba głosów (głosowanie); domyślnie 0 przy utworzeniu zgłoszenia.
+    vote_count: int = 0
     created_at: datetime
 
 

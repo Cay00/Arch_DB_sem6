@@ -59,6 +59,7 @@
     <string name="issue_detail_image_content_description">Zdjęcie zgłoszenia</string>
     <string name="issue_detail_label_category">Kategoria</string>
     <string name="issue_detail_label_status">Status</string>
+    <string name="issue_detail_label_vote_count">Głosy społeczności</string>
     <string name="issue_detail_label_location">Lokalizacja</string>
     <string name="issue_detail_label_created">Data utworzenia</string>
     <string name="issue_detail_label_user_id">ID użytkownika</string>

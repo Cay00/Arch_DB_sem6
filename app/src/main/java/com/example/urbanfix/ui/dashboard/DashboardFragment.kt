@@ -12,6 +12,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
+import com.example.urbanfix.ui.issues.issueTileBodyAfterTitle
 import com.example.urbanfix.databinding.FragmentDashboardBinding
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
@@ -56,11 +57,11 @@ class DashboardFragment : Fragment() {
                 val userJson = fetchCurrentUser(email)
                 val official = userJson.optString("account_type", "").lowercase() == "official"
                 val issues = fetchIssues(userJson, email, official)
-                issues to official
-            }.onSuccess { (issues, official) ->
+                issues
+            }.onSuccess { issues ->
                 requireActivity().runOnUiThread {
                     setLoading(false)
-                    renderIssues(issues, official)
+                    renderIssues(issues)
                 }
             }.onFailure {
                 requireActivity().runOnUiThread {
@@ -113,7 +114,7 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun renderIssues(issues: JSONArray, isOfficial: Boolean) {
+    private fun renderIssues(issues: JSONArray) {
         binding.issuesContainer.removeAllViews()
         if (issues.length() == 0) {
             binding.textIssuesEmpty.visibility = View.VISIBLE
@@ -124,11 +125,11 @@ class DashboardFragment : Fragment() {
         binding.textIssuesEmpty.visibility = View.GONE
         for (i in 0 until issues.length()) {
             val issue = issues.getJSONObject(i)
-            binding.issuesContainer.addView(createIssueCard(issue, isOfficial))
+            binding.issuesContainer.addView(createIssueCard(issue))
         }
     }
 
-    private fun createIssueCard(issue: JSONObject, isOfficial: Boolean): View {
+    private fun createIssueCard(issue: JSONObject): View {
         val context = requireContext()
         val res = resources
         val padH = res.getDimensionPixelSize(R.dimen.issue_list_card_content_padding_horizontal)
@@ -178,7 +179,7 @@ class DashboardFragment : Fragment() {
         )
         inner.addView(
             TextView(context).apply {
-                text = issue.optString("title")
+                text = issue.optString("title").trim().ifEmpty { getString(R.string.profile_dash) }
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Subtitle)
                 setTypeface(null, Typeface.BOLD)
             },
@@ -186,29 +187,27 @@ class DashboardFragment : Fragment() {
         )
         inner.addView(
             TextView(context).apply {
-                text = buildString {
-                    append("Kategoria: ${issue.optString("category")}")
-                    append("\n")
-                    append("Lokalizacja: ${issue.optString("location")}")
-                    append("\n\n")
-                    append(issue.optString("description"))
-                }
+                text = issueTileBodyAfterTitle(
+                    context,
+                    issue.optString("category"),
+                    issue.optString("location"),
+                    issue.optString("description"),
+                    issue.optInt("vote_count", 0),
+                )
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_BodySecondary)
             },
             LinearLayout.LayoutParams(lpMatch, lpWrap).apply { topMargin = gapTitleBody },
         )
         card.addView(inner)
-        if (isOfficial) {
-            val issueId = issue.optInt("id", -1)
-            if (issueId >= 0) {
-                card.isClickable = true
-                card.isFocusable = true
-                card.setOnClickListener {
-                    findNavController().navigate(
-                        R.id.action_navigation_dashboard_to_navigation_issue_detail,
-                        bundleOf("issueId" to issueId),
-                    )
-                }
+        val issueId = issue.optInt("id", -1)
+        if (issueId >= 0) {
+            card.isClickable = true
+            card.isFocusable = true
+            card.setOnClickListener {
+                findNavController().navigate(
+                    R.id.action_navigation_dashboard_to_navigation_issue_detail,
+                    bundleOf("issueId" to issueId),
+                )
             }
         }
         return card
