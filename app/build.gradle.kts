@@ -60,6 +60,7 @@ dependencies {
     
     // Google Play Services for Location
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.coil)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

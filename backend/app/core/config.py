@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Resolve `.env` next to `backend/` so settings load even when CWD is not `backend/`
 _BACKEND_ROOT = Path(__file__).resolve().parent.parent.parent
+BACKEND_ROOT = _BACKEND_ROOT
 
 _DEV_JWT_SECRET = "dev-jwt-secret-not-for-production"
 _WEAK_JWT_SECRETS = frozenset(
@@ -36,6 +37,11 @@ class Settings(BaseSettings):
     #: Jeśli ustawione, `GET /issues?issues_list_secret=<wartość>` zwraca wszystkie zgłoszenia (integracje, webhooki).
     #: W produkcji bez tego nadal wymagane są `user_id` albo `official_email`.
     ISSUES_LIST_SECRET: str | None = Field(default=None)
+
+    #: Katalog na pliki statyczne zgłoszeń (względem katalogu backend/).
+    UPLOAD_DIR: str = "uploads"
+    #: Opcjonalnie pełny URL API (bez końcowego „/”), np. ``https://api.example.com`` — dopisywany do ``image_url`` w JSON (webhook / n8n).
+    API_PUBLIC_BASE_URL: str | None = Field(default=None)
 
     @model_validator(mode="after")
     def reject_weak_secrets_in_production(self) -> Self:
