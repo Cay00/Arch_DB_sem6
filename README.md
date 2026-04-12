@@ -5,6 +5,7 @@
 - zgłaszanie usterek działa, każde zgłoszenie przypisywane jest do zalogowanego użytkownika, dostępne do podglądu przez webhooki
 - każde zgłoszenie ma odpowiedni status rozpatrywania
 - Użytkownik Official ma dostęp do wszystkich zgłoszeń, oraz może zmieniać ich status
+- Użytkownicy mają możliwość oddawania głosów na zgłoszenia społeczności
 
 Projekt do zglaszania usterek miejskich:
 - aplikacja Android (Kotlin + Firebase Auth),
