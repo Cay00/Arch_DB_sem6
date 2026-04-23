@@ -19,6 +19,7 @@
     <dimen name="issue_list_card_margin_bottom">10dp</dimen>
     <dimen name="issue_list_container_padding_bottom">8dp</dimen>
     <dimen name="dashboard_content_top_spacing">24dp</dimen>
+    <dimen name="map_marker_padding">72dp</dimen>
     <!-- Szczegóły zgłoszenia (ekran) -->
     <dimen name="issue_detail_screen_padding_h">16dp</dimen>
     <dimen name="issue_detail_screen_padding_v">16dp</dimen>

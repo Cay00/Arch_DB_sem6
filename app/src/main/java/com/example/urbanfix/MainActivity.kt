@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_home,
                 R.id.navigation_dashboard,
+                R.id.navigation_map,
                 R.id.navigation_profile,
             ),
         )
@@ -79,6 +80,10 @@ class MainActivity : AppCompatActivity() {
         when (destinationId) {
             R.id.navigation_home -> {
                 supportActionBar?.title = getString(R.string.toolbar_home_title)
+                supportActionBar?.subtitle = getString(R.string.toolbar_city_subtitle)
+            }
+            R.id.navigation_map -> {
+                supportActionBar?.title = getString(R.string.toolbar_map_title)
                 supportActionBar?.subtitle = getString(R.string.toolbar_city_subtitle)
             }
             R.id.navigation_profile -> {

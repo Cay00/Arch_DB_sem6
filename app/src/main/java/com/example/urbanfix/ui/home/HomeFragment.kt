@@ -24,7 +24,7 @@ import java.time.OffsetDateTime
 
 class HomeFragment : Fragment() {
 
-    private enum class IssueFilter { ALL, ROADS, GREENERY, INVESTMENTS }
+    private enum class IssueFilter { ALL, ROADS, GREENERY, VANDALISM }
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
             activeFilter = when (checkedId) {
                 R.id.button_filter_roads -> IssueFilter.ROADS
                 R.id.button_filter_greenery -> IssueFilter.GREENERY
-                R.id.button_filter_investments -> IssueFilter.INVESTMENTS
+                R.id.button_filter_investments -> IssueFilter.VANDALISM
                 else -> IssueFilter.ALL
             }
             renderFilteredIssues()
@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
                 IssueFilter.ALL -> true
                 IssueFilter.ROADS -> category.contains("drog")
                 IssueFilter.GREENERY -> category.contains("ziel")
-                IssueFilter.INVESTMENTS -> category.contains("inwest")
+                IssueFilter.VANDALISM -> category.contains("wandal")
             }
         }
         binding.containerHomeIssues.removeAllViews()

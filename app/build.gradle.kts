@@ -60,6 +60,9 @@ dependencies {
     
     // Google Play Services for Location
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    // OpenStreetMap via Osmdroid
+    implementation("org.osmdroid:osmdroid-android:6.1.14")
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation(libs.coil)
 
     testImplementation(libs.junit)

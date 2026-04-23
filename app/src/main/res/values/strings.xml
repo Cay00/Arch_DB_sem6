@@ -8,6 +8,14 @@
     <string name="toolbar_profile_title">Panel użytkownika</string>
     <string name="toolbar_city_subtitle">Wrocław</string>
     <string name="title_dashboard">Zgłoszenia</string>
+    <string name="title_map">Mapa</string>
+    <string name="toolbar_map_title">Mapa inwestycji i usterek</string>
+    <string name="map_pin_investment_type">Inwestycja</string>
+    <string name="map_pin_issue_type">Usterka</string>
+    <string name="map_pin_investment_legnicka">Modernizacja ul. Legnickiej - etap II</string>
+    <string name="map_pin_investment_tram">Nowa linia tramwajowa na Jagodno</string>
+    <string name="map_pin_issue_sidewalk">Pęknięty chodnik przy ul. Kościuszki</string>
+    <string name="map_pin_issue_lighting">Awaria oświetlenia przy pl. Jana Pawła II</string>
     <string name="dashboard_section_investments">Inwestycje miejskie</string>
     <string name="dashboard_section_public_spending">Wydatki publiczne</string>
     <string name="dashboard_tab_mine">Moje</string>
@@ -66,7 +74,7 @@
     <string name="home_filter_all">Wszystkie</string>
     <string name="home_filter_roads">Drogi</string>
     <string name="home_filter_greenery">Zieleń</string>
-    <string name="home_filter_investments">Inwestycje</string>
+    <string name="home_filter_investments">Wandalizm</string>
     <string name="home_create_issue">Utwórz zgłoszenie</string>
     <string name="home_issues_empty">Brak zgłoszeń dla wybranego typu.</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>

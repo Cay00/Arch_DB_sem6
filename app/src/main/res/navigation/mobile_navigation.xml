@@ -54,6 +54,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_map"
+        android:name="com.example.urbanfix.ui.map.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_map" />
+
+    <fragment
         android:id="@+id/navigation_issue_detail"
         android:name="com.example.urbanfix.ui.issues.IssueDetailFragment"
         android:label="@string/issue_detail_title"
