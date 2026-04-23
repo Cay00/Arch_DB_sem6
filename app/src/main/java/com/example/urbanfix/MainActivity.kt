@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_home,
                 R.id.navigation_dashboard,
+                R.id.navigation_map,
                 R.id.navigation_profile,
             ),
         )
@@ -71,7 +72,28 @@ class MainActivity : AppCompatActivity() {
         binding.navView.visibility = if (onAuth) View.GONE else View.VISIBLE
         binding.toolbarMain.visibility = if (onAuth) View.GONE else View.VISIBLE
         anchorNavHostBelowToolbar(!onAuth)
+        applyToolbarText(destinationId)
         invalidateOptionsMenu()
+    }
+
+    private fun applyToolbarText(destinationId: Int?) {
+        when (destinationId) {
+            R.id.navigation_home -> {
+                supportActionBar?.title = getString(R.string.toolbar_home_title)
+                supportActionBar?.subtitle = getString(R.string.toolbar_city_subtitle)
+            }
+            R.id.navigation_map -> {
+                supportActionBar?.title = getString(R.string.toolbar_map_title)
+                supportActionBar?.subtitle = getString(R.string.toolbar_city_subtitle)
+            }
+            R.id.navigation_profile -> {
+                supportActionBar?.title = getString(R.string.toolbar_profile_title)
+                supportActionBar?.subtitle = getString(R.string.toolbar_city_subtitle)
+            }
+            else -> {
+                supportActionBar?.subtitle = null
+            }
+        }
     }
 
     /** Na auth: NavHost od góry okna + inset status bara; inaczej od dołu toolbara (toolbar ma już topMargin = inset). */

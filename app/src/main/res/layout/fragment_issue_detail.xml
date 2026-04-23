@@ -30,10 +30,35 @@
                 android:paddingTop="@dimen/issue_list_card_content_padding_top"
                 android:paddingBottom="@dimen/issue_list_card_content_padding_bottom">
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/image_issue_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/issue_detail_image_content_description"
+                        android:maxHeight="@dimen/issue_detail_image_max_height"
+                        android:scaleType="fitCenter"
+                        tools:src="@android:drawable/ic_menu_gallery" />
+
+                    <TextView
+                        android:id="@+id/text_issue_photo_placeholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:gravity="center"
+                        android:text="@string/issue_detail_photo_placeholder"
+                        android:textSize="36sp"
+                        tools:visibility="gone" />
+                </FrameLayout>
+
                 <TextView
                     android:id="@+id/text_issue_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
                     android:background="@drawable/bg_issue_detail_id_chip"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
@@ -51,35 +76,52 @@
                     android:textSize="22sp"
                     tools:text="Tytuł zgłoszenia" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:text="@string/issue_detail_label_category"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_issue_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_issue_tag_category"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:textAppearance="@style/TextAppearance.Urbanfix.Label"
+                        android:textStyle="bold"
+                        tools:text="Drogi" />
+
+                    <TextView
+                        android:id="@+id/text_issue_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_issue_tag_status"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:textAppearance="@style/TextAppearance.Urbanfix.Label"
+                        android:textStyle="bold"
+                        tools:text="Zgłoszone" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/text_issue_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                    tools:text="Drogi" />
-
-                <TextView
+                    android:id="@+id/text_issue_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:text="@string/issue_detail_label_status"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
+                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
+                    tools:text="Opis" />
 
-                <TextView
-                    android:id="@+id/text_issue_status"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_support_issue"
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                    tools:text="Zgłoszone" />
+                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
+                    app:cornerRadius="@dimen/home_issue_tile_corner_radius"
+                    tools:text="Poprzyj (12)" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -100,74 +142,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:text="@string/issue_detail_label_vote_count"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
-
-                <LinearLayout
-                    android:id="@+id/row_issue_vote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_vote_minus"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="56dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/issue_vote_minus_cd"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:minHeight="48dp"
-                        android:text="−"
-                        android:textSize="20sp"
-                        app:cornerRadius="@dimen/home_issue_tile_corner_radius" />
-
-                    <TextView
-                        android:id="@+id/text_issue_vote_count"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                        android:textSize="20sp"
-                        tools:text="0" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_vote_plus"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="56dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/issue_vote_plus_cd"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:minHeight="48dp"
-                        android:text="+"
-                        android:textSize="20sp"
-                        app:cornerRadius="@dimen/home_issue_tile_corner_radius" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:text="@string/issue_detail_label_description"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
-
-                <TextView
-                    android:id="@+id/text_issue_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                    tools:text="Opis" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
                     android:text="@string/issue_detail_label_created"
                     android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
 
@@ -183,29 +157,159 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:text="@string/issue_detail_label_user_id"
+                    android:text="@string/issue_detail_label_timeline"
                     android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailLabel" />
 
-                <TextView
-                    android:id="@+id/text_issue_user_id"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_label_to_value_gap"
-                    android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue"
-                    tools:text="5" />
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/image_issue_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/issue_detail_section_margin_top"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/issue_detail_image_content_description"
-                    android:maxHeight="@dimen/issue_detail_image_max_height"
-                    android:scaleType="fitCenter"
-                    android:visibility="gone"
-                    tools:src="@android:drawable/ic_menu_gallery"
-                    tools:visibility="visible" />
+                    <LinearLayout
+                        android:id="@+id/row_timeline_reported"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_timeline_dot_reported"
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="●"
+                            android:textColor="#2E7D32"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_timeline_label_reported"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Zgłoszone"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue" />
+
+                            <TextView
+                                android:id="@+id/text_timeline_date_reported"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
+                                tools:text="2026-04-21 12:45" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/row_timeline_reviewed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_timeline_dot_reviewed"
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="●"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_timeline_label_reviewed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Rozpatrywane"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue" />
+
+                            <TextView
+                                android:id="@+id/text_timeline_date_reviewed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
+                                tools:text="2026-04-22 08:10" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/row_timeline_accepted"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_timeline_dot_accepted"
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="●"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_timeline_label_accepted"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Zaakceptowane"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue" />
+
+                            <TextView
+                                android:id="@+id/text_timeline_date_accepted"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
+                                tools:text="2026-04-23 09:30" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/row_timeline_rejected"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_timeline_dot_rejected"
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="●"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_timeline_label_rejected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Odrzucone"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.IssueDetailValue" />
+
+                            <TextView
+                                android:id="@+id/text_timeline_date_rejected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
+                                tools:text="2026-04-23 09:30" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

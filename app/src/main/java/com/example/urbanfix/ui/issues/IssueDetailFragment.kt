@@ -18,6 +18,8 @@ import coil.load
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import org.json.JSONObject
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.Executors
 
 class IssueDetailFragment : Fragment() {
@@ -115,12 +117,12 @@ class IssueDetailFragment : Fragment() {
         binding.textIssueId.text = getString(R.string.issue_detail_label_id) + ": $id"
         val plainTitle = j.optString("title").trim().ifEmpty { getString(R.string.profile_dash) }
         binding.textIssueTitle.text = plainTitle
-        (activity as? AppCompatActivity)?.supportActionBar?.title = plainTitle
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.issue_detail_title)
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = null
         binding.textIssueDescription.text = j.optString("description").ifEmpty { "—" }
         bindIssuePhoto(j.optString("image_url", "").trim())
         binding.textIssueCategory.text = j.optString("category").ifEmpty { "—" }
         binding.textIssueStatus.text = j.optString("status").ifEmpty { "—" }
-        binding.textIssueVoteCount.text = j.optInt("vote_count", 0).toString()
         binding.textIssueLocation.text = j.optString("location").ifEmpty { "—" }
         val created = j.optString("created_at", "")
         binding.textIssueCreated.text = if (created.contains("T")) {
@@ -128,24 +130,50 @@ class IssueDetailFragment : Fragment() {
         } else {
             created.ifEmpty { "—" }
         }
-        binding.textIssueUserId.text = j.optInt("user_id", -1).takeIf { it >= 0 }?.toString() ?: "—"
+        bindStatusTimeline(j.optString("status").ifEmpty { "—" }, created)
         bindVoteButtons(j)
     }
+
+    private fun bindStatusTimeline(status: String, createdAt: String) {
+        val rows = listOf(
+            Triple(binding.textTimelineDotReported, binding.textTimelineLabelReported, binding.textTimelineDateReported),
+            Triple(binding.textTimelineDotReviewed, binding.textTimelineLabelReviewed, binding.textTimelineDateReviewed),
+            Triple(binding.textTimelineDotAccepted, binding.textTimelineLabelAccepted, binding.textTimelineDateAccepted),
+            Triple(binding.textTimelineDotRejected, binding.textTimelineLabelRejected, binding.textTimelineDateRejected),
+        )
+        val statuses = resources.getStringArray(R.array.issue_status_values).toList()
+        val currentIndex = statuses.indexOf(status).coerceAtLeast(0)
+        val dateText = createdAtToLabel(createdAt)
+        rows.forEachIndexed { index, (dot, label, date) ->
+            val reached = index <= currentIndex
+            val color = if (reached) 0xFF2E7D32.toInt() else 0xFF9E9E9E.toInt()
+            dot.setTextColor(color)
+            label.setTextColor(color)
+            date.text = if (reached) dateText else getString(R.string.issue_detail_timeline_pending)
+        }
+    }
+
+    private fun createdAtToLabel(raw: String): String =
+        runCatching {
+            val dt = OffsetDateTime.parse(raw)
+            dt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+        }.getOrDefault(getString(R.string.issue_detail_timeline_unknown_date))
 
     private fun bindVoteButtons(j: JSONObject) {
         val issueId = arguments?.getInt("issueId") ?: -1
         val uid = detailViewerUserId
         val hasVoted = j.has("viewer_vote") && !j.isNull("viewer_vote")
         val canVote = uid >= 0 && issueId >= 0
-        binding.rowIssueVote.visibility = if (canVote) View.VISIBLE else View.GONE
+        binding.buttonSupportIssue.visibility = if (canVote) View.VISIBLE else View.GONE
         if (!canVote) return
-        binding.buttonVotePlus.isEnabled = !hasVoted
-        binding.buttonVoteMinus.isEnabled = !hasVoted
-        binding.buttonVotePlus.setOnClickListener {
+        val voteCount = j.optInt("vote_count", 0)
+        binding.buttonSupportIssue.text = getString(
+            if (hasVoted) R.string.issue_detail_support_action_voted else R.string.issue_detail_support_action,
+            voteCount,
+        )
+        binding.buttonSupportIssue.isEnabled = !hasVoted
+        binding.buttonSupportIssue.setOnClickListener {
             submitDetailVote(issueId, uid, 1, j)
-        }
-        binding.buttonVoteMinus.setOnClickListener {
-            submitDetailVote(issueId, uid, -1, j)
         }
     }
 
@@ -155,8 +183,7 @@ class IssueDetailFragment : Fragment() {
         optimistic.put("vote_count", snapshot.optInt("vote_count", 0) + delta)
         optimistic.put("viewer_vote", delta)
         bindIssue(optimistic)
-        binding.buttonVotePlus.isEnabled = false
-        binding.buttonVoteMinus.isEnabled = false
+        binding.buttonSupportIssue.isEnabled = false
         val base = backendBaseUrl()
         io.execute {
             try {
@@ -178,11 +205,13 @@ class IssueDetailFragment : Fragment() {
     private fun bindIssuePhoto(rawUrl: String) {
         if (rawUrl.isEmpty() || rawUrl.equals("null", ignoreCase = true)) {
             binding.imageIssuePhoto.visibility = View.GONE
+            binding.textIssuePhotoPlaceholder.visibility = View.VISIBLE
             binding.imageIssuePhoto.setImageDrawable(null)
             return
         }
         val url = resolveIssueImageUrl(rawUrl)
         binding.imageIssuePhoto.visibility = View.VISIBLE
+        binding.textIssuePhotoPlaceholder.visibility = View.GONE
         binding.imageIssuePhoto.load(url) {
             lifecycle(viewLifecycleOwner)
             crossfade(true)
@@ -191,6 +220,7 @@ class IssueDetailFragment : Fragment() {
                     if (!isAdded) return@listener
                     _binding?.let { b ->
                         b.imageIssuePhoto.visibility = View.GONE
+                        b.textIssuePhotoPlaceholder.visibility = View.VISIBLE
                         b.imageIssuePhoto.setImageDrawable(null)
                     }
                 },

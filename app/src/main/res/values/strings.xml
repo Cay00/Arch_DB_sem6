@@ -4,7 +4,20 @@
 
     <string name="app_name">urbanfix</string>
     <string name="title_home">Home</string>
+    <string name="toolbar_home_title">UrbanFix</string>
+    <string name="toolbar_profile_title">Panel użytkownika</string>
+    <string name="toolbar_city_subtitle">Wrocław</string>
     <string name="title_dashboard">Zgłoszenia</string>
+    <string name="title_map">Mapa</string>
+    <string name="toolbar_map_title">Mapa inwestycji i usterek</string>
+    <string name="map_pin_investment_type">Inwestycja</string>
+    <string name="map_pin_issue_type">Usterka</string>
+    <string name="map_pin_investment_legnicka">Modernizacja ul. Legnickiej - etap II</string>
+    <string name="map_pin_investment_tram">Nowa linia tramwajowa na Jagodno</string>
+    <string name="map_pin_issue_sidewalk">Pęknięty chodnik przy ul. Kościuszki</string>
+    <string name="map_pin_issue_lighting">Awaria oświetlenia przy pl. Jana Pawła II</string>
+    <string name="dashboard_section_investments">Inwestycje miejskie</string>
+    <string name="dashboard_section_public_spending">Wydatki publiczne</string>
     <string name="dashboard_tab_mine">Moje</string>
     <string name="dashboard_tab_community">Społeczność</string>
     <string name="dashboard_community_empty">Brak zgłoszeń w statusie Zgłoszone.</string>
@@ -12,6 +25,7 @@
     <string name="issue_vote_minus_cd">Głos przeciw</string>
     <string name="issue_vote_error">Nie udało się zapisać głosu.</string>
     <string name="title_profile">Mój profil</string>
+    <string name="title_my_issues">Moje zgłoszenia</string>
 
     <string name="title_auth">Konto</string>
     <string name="auth_heading_login">Logowanie</string>
@@ -50,12 +64,19 @@
     <string name="issue_form_category_road">Kategoria: Drogi</string>
     <string name="issue_form_status_new">Status po złożeniu: Zgłoszone</string>
     <string name="issue_hint_title">Tytuł</string>
+    <string name="issue_hint_category">Typ zgłoszenia</string>
     <string name="issue_hint_description">Opis</string>
     <string name="issue_hint_location">Lokalizacja</string>
     <string name="issue_hint_user_id">User ID (konto)</string>
     <string name="issue_button_submit">Wyślij zgłoszenie</string>
     <string name="issue_card_status">Status: %1$s</string>
     <string name="issue_submit_success_with_status">Zgłoszenie zapisane. Status: Zgłoszone</string>
+    <string name="home_filter_all">Wszystkie</string>
+    <string name="home_filter_roads">Drogi</string>
+    <string name="home_filter_greenery">Zieleń</string>
+    <string name="home_filter_investments">Wandalizm</string>
+    <string name="home_create_issue">Utwórz zgłoszenie</string>
+    <string name="home_issues_empty">Brak zgłoszeń dla wybranego typu.</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>
     <string name="my_issues_load_error">Nie udało się pobrać zgłoszeń.</string>
     <string name="issue_detail_title">Szczegóły zgłoszenia</string>
@@ -63,18 +84,23 @@
     <string name="issue_detail_label_title">Tytuł</string>
     <string name="issue_detail_label_description">Opis</string>
     <string name="issue_detail_image_content_description">Zdjęcie zgłoszenia</string>
+    <string name="issue_detail_photo_placeholder">🖼️</string>
     <string name="issue_detail_label_category">Kategoria</string>
     <string name="issue_detail_label_status">Status</string>
     <string name="issue_detail_label_vote_count">Głosy społeczności</string>
     <string name="issue_detail_label_location">Lokalizacja</string>
     <string name="issue_detail_label_created">Data utworzenia</string>
-    <string name="issue_detail_label_user_id">ID użytkownika</string>
+    <string name="issue_detail_label_timeline">Oś czasu statusu</string>
     <string name="issue_detail_status_hint">Nowy status</string>
     <string name="issue_detail_save_status">Zapisz status</string>
     <string name="issue_detail_official_section_title">Zmiana statusu (Official)</string>
     <string name="issue_detail_load_error">Nie udało się wczytać zgłoszenia.</string>
     <string name="issue_detail_status_saved">Status zaktualizowany.</string>
     <string name="issue_detail_status_save_error">Nie udało się zapisać statusu.</string>
+    <string name="issue_detail_support_action">Poprzyj (%1$d)</string>
+    <string name="issue_detail_support_action_voted">Popierasz (%1$d)</string>
+    <string name="issue_detail_timeline_pending">oczekuje</string>
+    <string name="issue_detail_timeline_unknown_date">brak daty</string>
 
     <string name="profile_section_account">Konto</string>
     <string name="profile_name_label">Imię i nazwisko</string>
@@ -82,7 +108,7 @@
     <string name="profile_firebase_uid_label">Identyfikator Firebase</string>
     <string name="profile_backend_id_label">ID w backendzie (Postgres)</string>
     <string name="profile_section_issues">Zgłoszenia</string>
-    <string name="profile_open_issues_tab">Otwórz zakładkę Zgłoszenia</string>
+    <string name="profile_open_issues_tab">Moje zgłoszenia</string>
     <string name="profile_section_notifications">Powiadomienia</string>
     <string name="profile_notifications_placeholder">Brak powiadomień. W przyszłości pojawią się tu statusy zgłoszeń.</string>
     <string name="profile_section_settings">Ustawienia</string>

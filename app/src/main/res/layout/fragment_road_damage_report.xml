@@ -17,12 +17,23 @@
         android:paddingTop="12dp"
         android:paddingBottom="8dp">
 
-        <TextView
-            android:id="@+id/textCategoryLabel"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutIssueCategory"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary"
-            tools:text="Kategoria: Drogi" />
+            android:hint="@string/issue_hint_category"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/editIssueCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:minHeight="52dp"
+                android:textSize="18sp"
+                tools:text="Drogi" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
