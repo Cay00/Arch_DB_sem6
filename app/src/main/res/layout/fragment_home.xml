@@ -1,237 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/report_grid"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggle_issue_filters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_filter_all"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_filter_all" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_filter_roads"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_filter_roads" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_filter_greenery"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_filter_greenery" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_filter_investments"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_filter_investments" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </HorizontalScrollView>
+
+        <ProgressBar
+            android:id="@+id/progress_home_issues"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_home_issues_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textAppearance="@style/TextAppearance.Urbanfix.Body"
+            android:visibility="gone"
+            tools:text="Brak zgłoszeń." />
+
+        <ScrollView
+            android:id="@+id/scroll_home_issues"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/container_home_issues"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="96dp" />
+        </ScrollView>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_create_issue"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tile_road_damage"
-            style="@style/Widget.Urbanfix.HomeIssueTile"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="6dp"
-            android:clickable="true"
-            android:contentDescription="@string/tile_road_damage"
-            android:focusable="true"
-            app:layout_constraintBottom_toTopOf="@id/tile_illegal_dumping"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@id/tile_street_lighting"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingHorizontal="14dp"
-                android:paddingTop="18dp"
-                android:paddingBottom="14dp">
-
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_home_tile_icon">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:importantForAccessibility="no"
-                        app:srcCompat="@drawable/ic_tile_road_damage"
-                        app:tint="?attr/colorPrimary" />
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="3"
-                    android:text="@string/tile_road_damage"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp"
-                    tools:text="Uszkodzenie nawierzchni" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tile_street_lighting"
-            style="@style/Widget.Urbanfix.HomeIssueTile"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="6dp"
-            android:clickable="true"
-            android:contentDescription="@string/tile_street_lighting"
-            android:focusable="true"
-            app:layout_constraintBottom_toTopOf="@id/tile_vandalism"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tile_road_damage"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingHorizontal="14dp"
-                android:paddingTop="18dp"
-                android:paddingBottom="14dp">
-
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_home_tile_icon">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:importantForAccessibility="no"
-                        app:srcCompat="@drawable/ic_tile_street_lighting"
-                        app:tint="?attr/colorPrimary" />
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="3"
-                    android:text="@string/tile_street_lighting"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp"
-                    tools:text="Awaria oświetlenia" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tile_illegal_dumping"
-            style="@style/Widget.Urbanfix.HomeIssueTile"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="6dp"
-            android:clickable="true"
-            android:contentDescription="@string/tile_illegal_dumping"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@id/tile_vandalism"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tile_road_damage">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingHorizontal="14dp"
-                android:paddingTop="18dp"
-                android:paddingBottom="14dp">
-
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_home_tile_icon">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:importantForAccessibility="no"
-                        app:srcCompat="@drawable/ic_tile_illegal_dumping"
-                        app:tint="?attr/colorPrimary" />
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="3"
-                    android:text="@string/tile_illegal_dumping"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp"
-                    tools:text="Nielegalne wysypisko" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tile_vandalism"
-            style="@style/Widget.Urbanfix.HomeIssueTile"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="6dp"
-            android:clickable="true"
-            android:contentDescription="@string/tile_vandalism"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tile_illegal_dumping"
-            app:layout_constraintTop_toBottomOf="@id/tile_street_lighting">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingHorizontal="14dp"
-                android:paddingTop="18dp"
-                android:paddingBottom="14dp">
-
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_home_tile_icon">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:importantForAccessibility="no"
-                        app:srcCompat="@drawable/ic_tile_vandalism"
-                        app:tint="?attr/colorPrimary" />
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="3"
-                    android:text="@string/tile_vandalism"
-                    android:textAlignment="center"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp"
-                    tools:text="Wandalizm" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="@string/home_create_issue"
+        app:srcCompat="@android:drawable/ic_input_add" />
+</FrameLayout>

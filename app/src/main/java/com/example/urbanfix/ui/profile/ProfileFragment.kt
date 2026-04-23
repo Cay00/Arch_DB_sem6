@@ -48,7 +48,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonProfileOpenIssues.setOnClickListener {
-            findNavController().navigate(R.id.navigation_dashboard)
+            findNavController().navigate(R.id.action_navigation_profile_to_navigation_my_issues)
         }
         binding.buttonProfileLogout.setOnClickListener { logout() }
     }

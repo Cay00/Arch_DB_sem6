@@ -44,10 +44,8 @@ class ReportFragment : Fragment() {
     private var _binding: FragmentRoadDamageReportBinding? = null
     private val binding get() = _binding!!
 
-    // Pobieramy biezaca kategorie z argumentow nawigacji (przekazana przez bundleOf)
-    private val categoryArg: String by lazy {
-        arguments?.getString("category") ?: "Drogi"
-    }
+    private val categoryArg: String by lazy { arguments?.getString("category") ?: "Drogi" }
+    private val availableCategories = listOf("Drogi", "Zieleń", "Inwestycje", "Oświetlenie", "Porządek")
 
     private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
@@ -112,8 +110,10 @@ class ReportFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Wyswietlamy wybrana kategorie na gorze formularza
-        binding.textCategoryLabel.text = "Kategoria: $categoryArg"
+        binding.editIssueCategory.setAdapter(
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, availableCategories),
+        )
+        binding.editIssueCategory.setText(categoryArg, false)
         
         setupUserInformation()
         setupPhotoButtons()
@@ -370,8 +370,9 @@ class ReportFragment : Fragment() {
                         addFormField(writer, outputStream, boundary, "title", title)
                         addFormField(writer, outputStream, boundary, "description", description)
                         
-                        // Przesylamy dynamiczna kategorie pobrana z argumentow
-                        addFormField(writer, outputStream, boundary, "category", categoryArg)
+                        val selectedCategory = binding.editIssueCategory.text?.toString()?.trim().orEmpty()
+                            .ifBlank { categoryArg }
+                        addFormField(writer, outputStream, boundary, "category", selectedCategory)
 
                         addFormField(writer, outputStream, boundary, "location", location)
                         addFormField(writer, outputStream, boundary, "user_id", userId.toString())
@@ -452,6 +453,7 @@ class ReportFragment : Fragment() {
 
     private fun clearForm() {
         binding.editIssueLocation.setText("")
+        binding.editIssueCategory.setText(categoryArg, false)
         binding.editIssueTitle.text = null
         binding.editIssueDescription.text = null
         binding.imagePreview.visibility = View.GONE

@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_navigation_home_to_road_damage_report"
             app:destination="@id/navigation_road_damage_report" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_issue_detail"
+            app:destination="@id/navigation_issue_detail" />
     </fragment>
 
     <fragment
@@ -65,5 +68,19 @@
         android:id="@+id/navigation_profile"
         android:name="com.example.urbanfix.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_my_issues"
+            app:destination="@id/navigation_my_issues" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_my_issues"
+        android:name="com.example.urbanfix.ui.issues.MyIssuesFragment"
+        android:label="@string/title_my_issues"
+        tools:layout="@layout/fragment_my_issues">
+        <action
+            android:id="@+id/action_navigation_my_issues_to_navigation_issue_detail"
+            app:destination="@id/navigation_issue_detail" />
+    </fragment>
 </navigation>

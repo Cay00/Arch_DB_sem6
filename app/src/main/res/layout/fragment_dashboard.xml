@@ -1,64 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:clipToPadding="false"
     android:paddingHorizontal="16dp"
     android:paddingTop="12dp"
     android:paddingBottom="16dp">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutIssues"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:tabGravity="fill"
-        app:tabMode="fixed">
+        android:orientation="vertical">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_tab_mine" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_tab_community" />
-    </com.google.android.material.tabs.TabLayout>
-
-    <ProgressBar
-        android:id="@+id/progressIssues"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dashboard_content_top_spacing"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/textIssuesEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dashboard_content_top_spacing"
-        android:text="@string/my_issues_empty"
-        android:textAppearance="@style/TextAppearance.Urbanfix.Body"
-        android:visibility="gone" />
-
-    <ScrollView
-        android:id="@+id/issuesScroll"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:id="@+id/issuesContainer"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/issue_list_container_padding_bottom" />
-    </ScrollView>
-</LinearLayout>
+            android:text="@string/dashboard_section_investments"
+            android:textAppearance="@style/TextAppearance.Urbanfix.Title" />
+
+        <LinearLayout
+            android:id="@+id/container_investments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/dashboard_section_public_spending"
+            android:textAppearance="@style/TextAppearance.Urbanfix.Title" />
+
+        <LinearLayout
+            android:id="@+id/container_spending"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical" />
+    </LinearLayout>
+</ScrollView>
