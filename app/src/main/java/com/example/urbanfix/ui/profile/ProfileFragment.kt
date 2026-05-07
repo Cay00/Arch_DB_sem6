@@ -2,7 +2,6 @@ package com.example.urbanfix.ui.profile
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.data.BackendUserJson
-import com.example.urbanfix.data.IssuesApi
 import com.example.urbanfix.ui.issues.issueTileBodyAfterTitle
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import com.example.urbanfix.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONArray
@@ -103,7 +99,7 @@ class ProfileFragment : Fragment() {
                                 count,
                                 count,
                             )
-                        renderProfileIssuesList(load.issues, load.userId)
+                        renderProfileIssuesList(load.issues)
                     },
                     onFailure = {
                         binding.textProfileBackendId.text = getString(R.string.profile_backend_error)
@@ -120,7 +116,7 @@ class ProfileFragment : Fragment() {
         binding.profileIssuesList.visibility = View.GONE
     }
 
-    private fun renderProfileIssuesList(issues: JSONArray, viewerUserId: Int) {
+    private fun renderProfileIssuesList(issues: JSONArray) {
         binding.profileIssuesList.removeAllViews()
         if (issues.length() == 0) {
             binding.profileIssuesList.visibility = View.GONE
@@ -180,74 +176,8 @@ class ProfileFragment : Fragment() {
                     setPadding(0, (4 * density).toInt(), 0, 0)
                 },
             )
-            if (viewerUserId >= 0) {
-                val btnW = (56 * density).toInt()
-                val lpWrap = ViewGroup.LayoutParams.WRAP_CONTENT
-                val hasVoted = issue.has("viewer_vote") && !issue.isNull("viewer_vote")
-                val iid = issue.optInt("id", -1)
-                val netTv = TextView(ctx).apply {
-                    text = issue.optInt("vote_count", 0).toString()
-                    textSize = 16f
-                    gravity = Gravity.CENTER
-                }
-                lateinit var minusBtn: MaterialButton
-                lateinit var plusBtn: MaterialButton
-                minusBtn = MaterialButton(ctx, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
-                    text = "−"
-                    minHeight = (48 * density).toInt()
-                    isEnabled = !hasVoted
-                    setOnClickListener {
-                        postProfileListVote(iid, viewerUserId, -1, netTv, minusBtn, plusBtn)
-                    }
-                }
-                plusBtn = MaterialButton(ctx, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
-                    text = "+"
-                    minHeight = (48 * density).toInt()
-                    isEnabled = !hasVoted
-                    setOnClickListener {
-                        postProfileListVote(iid, viewerUserId, 1, netTv, minusBtn, plusBtn)
-                    }
-                }
-                val row = LinearLayout(ctx).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER_VERTICAL
-                    setPadding(0, (6 * density).toInt(), 0, 0)
-                    addView(minusBtn, LinearLayout.LayoutParams(btnW, lpWrap))
-                    addView(netTv, LinearLayout.LayoutParams(0, lpWrap, 1f))
-                    addView(plusBtn, LinearLayout.LayoutParams(btnW, lpWrap))
-                }
-                block.addView(row)
-            }
             binding.profileIssuesList.addView(block)
         }
-    }
-
-    private fun postProfileListVote(
-        issueId: Int,
-        userId: Int,
-        delta: Int,
-        netTv: TextView,
-        minus: MaterialButton,
-        plus: MaterialButton,
-    ) {
-        if (issueId < 0) return
-        val old = netTv.text.toString().toIntOrNull() ?: 0
-        minus.isEnabled = false
-        plus.isEnabled = false
-        netTv.text = (old + delta).toString()
-        Thread {
-            try {
-                IssuesApi.postVote(backendBaseUrl(), issueId, userId, delta)
-                requireActivity().runOnUiThread { loadBackendSummary() }
-            } catch (_: Exception) {
-                requireActivity().runOnUiThread {
-                    netTv.text = old.toString()
-                    minus.isEnabled = true
-                    plus.isEnabled = true
-                    Snackbar.make(binding.root, R.string.issue_vote_error, Snackbar.LENGTH_SHORT).show()
-                }
-            }
-        }.start()
     }
 
     private fun fetchUserJsonByEmail(email: String): JSONObject {

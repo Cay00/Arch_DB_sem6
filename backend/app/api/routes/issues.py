@@ -1,4 +1,5 @@
 import secrets
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from pydantic import ValidationError
@@ -8,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.core.config import settings
-from app.core.issue_status import DEFAULT_ON_CREATE, ZGLOSZONE
+from app.core.issue_status import DEFAULT_ON_CREATE, ODRZUCONE, ROZPATRYWANE, ZAAKCEPTOWANE, ZGLOSZONE
 from app.core.media import save_issue_upload
 from app.models.issue import Issue
 from app.models.issue_vote import IssueVote
@@ -66,6 +67,8 @@ def create_issue(
     description: str = Form(...),
     category: str = Form(...),
     location: str = Form(...),
+    location_lat: float | None = Form(None),
+    location_lng: float | None = Form(None),
     user_id: int = Form(...),
     image: UploadFile | None = File(None),
     db: Session = Depends(get_db),
@@ -77,6 +80,8 @@ def create_issue(
             description=description.strip(),
             category=category.strip(),
             location=location.strip(),
+            location_lat=location_lat,
+            location_lng=location_lng,
             user_id=user_id,
         )
     except ValidationError as e:
@@ -92,6 +97,8 @@ def create_issue(
         category=payload.category,
         status=DEFAULT_ON_CREATE,
         location=payload.location,
+        location_lat=payload.location_lat,
+        location_lng=payload.location_lng,
         user_id=payload.user_id,
     )
     db.add(issue)
@@ -268,6 +275,13 @@ def update_issue_status(
     if issue is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nie znaleziono zgłoszenia.")
     issue.status = payload.status
+    now = datetime.now(timezone.utc)
+    if payload.status == ROZPATRYWANE:
+        issue.reviewed_at = now
+    elif payload.status == ZAAKCEPTOWANE:
+        issue.accepted_at = now
+    elif payload.status == ODRZUCONE:
+        issue.rejected_at = now
     db.commit()
     db.refresh(issue)
     av = db.scalar(

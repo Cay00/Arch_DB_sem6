@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
+from app.core.issue_category import ALLOWED_CATEGORIES, normalize_issue_category
 from app.core.issue_status import ALL_STATUSES
 
 if TYPE_CHECKING:
@@ -18,7 +19,17 @@ class IssueCreate(BaseModel):
     description: str = Field(min_length=1, max_length=4000)
     category: str = Field(min_length=1, max_length=50)
     location: str = Field(min_length=1, max_length=255)
+    location_lat: float | None = Field(default=None, ge=-90, le=90)
+    location_lng: float | None = Field(default=None, ge=-180, le=180)
     user_id: int
+
+    @field_validator("category")
+    @classmethod
+    def category_must_be_allowed(cls, v: str) -> str:
+        normalized = normalize_issue_category(v)
+        if normalized not in ALLOWED_CATEGORIES:
+            raise ValueError(f"kategoria musi być jedną z: {', '.join(ALLOWED_CATEGORIES)}")
+        return normalized
 
 
 class IssuePublic(BaseModel):
@@ -30,6 +41,8 @@ class IssuePublic(BaseModel):
     category: str
     status: str = Field(max_length=32)
     location: str
+    location_lat: float | None = None
+    location_lng: float | None = None
     user_id: int
     #: Publiczny URL zdjęcia (wg ``API_PUBLIC_BASE_URL``) lub ścieżka ``/uploads/...`` — pole w odpowiedzi ``GET /issues`` (webhook).
     image_url: str | None = None
@@ -38,6 +51,9 @@ class IssuePublic(BaseModel):
     #: Głos zalogowanego użytkownika (+1 lub −1), jeśli już zagłosował; w przeciwnym razie ``null``.
     viewer_vote: int | None = None
     created_at: datetime
+    reviewed_at: datetime | None = None
+    accepted_at: datetime | None = None
+    rejected_at: datetime | None = None
 
 
 def issue_to_public(issue: "Issue", *, viewer_vote: int | None = None) -> IssuePublic:
@@ -48,11 +64,16 @@ def issue_to_public(issue: "Issue", *, viewer_vote: int | None = None) -> IssueP
         category=issue.category,
         status=issue.status,
         location=issue.location,
+        location_lat=issue.location_lat,
+        location_lng=issue.location_lng,
         user_id=issue.user_id,
         image_url=issue.image_url,
         vote_count=issue.vote_count,
         viewer_vote=viewer_vote,
         created_at=issue.created_at,
+        reviewed_at=issue.reviewed_at,
+        accepted_at=issue.accepted_at,
+        rejected_at=issue.rejected_at,
     )
 
 

@@ -11,11 +11,20 @@ import androidx.fragment.app.Fragment
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentDashboardBinding
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
 
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+
+    private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,18 +37,70 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val investments = listOf(
-            "Modernizacja ul. Legnickiej - etap II",
-            "Nowa linia tramwajowa na Jagodno",
-            "Rewitalizacja skweru przy ul. Świdnickiej",
-        )
-        val spending = listOf(
-            "Budżet dróg miejskich 2026: 128 mln zł",
-            "Utrzymanie zieleni miejskiej: 42 mln zł",
-            "Oświetlenie i energia: 26 mln zł",
-        )
-        investments.forEach { binding.containerInvestments.addView(createInfoCard(it)) }
-        spending.forEach { binding.containerSpending.addView(createInfoCard(it)) }
+        loadStats()
+    }
+
+    private fun loadStats() {
+        val email = auth.currentUser?.email?.trim().orEmpty()
+        if (email.isEmpty()) {
+            Snackbar.make(binding.root, R.string.my_issues_load_error, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        Thread {
+            val result = runCatching {
+                val encoded = URLEncoder.encode(email, Charsets.UTF_8.name())
+                val connection = (URL("${backendBaseUrl()}/issues?community_viewer_email=$encoded").openConnection() as HttpURLConnection).apply {
+                    requestMethod = "GET"
+                    connectTimeout = 10_000
+                    readTimeout = 10_000
+                }
+                try {
+                    if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                        error("HTTP ${connection.responseCode}")
+                    }
+                    val body = connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    JSONArray(body)
+                } finally {
+                    connection.disconnect()
+                }
+            }
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                result.onSuccess { renderStats(it) }
+                    .onFailure { Snackbar.make(binding.root, "Nie udalo sie pobrac statystyk", Snackbar.LENGTH_LONG).show() }
+            }
+        }.start()
+    }
+
+    private fun renderStats(issues: JSONArray) {
+        binding.containerInvestments.removeAllViews()
+        binding.containerSpending.removeAllViews()
+        val categoryCounts = linkedMapOf<String, Int>()
+        val statusCounts = linkedMapOf<String, Int>()
+        var withCoordinates = 0
+        for (i in 0 until issues.length()) {
+            val item = issues.optJSONObject(i) ?: continue
+            val category = item.optString("category").ifBlank { "Nieznana kategoria" }
+            categoryCounts[category] = (categoryCounts[category] ?: 0) + 1
+            val status = item.optString("status").ifBlank { "Brak statusu" }
+            statusCounts[status] = (statusCounts[status] ?: 0) + 1
+            val lat = item.optDouble("location_lat", Double.NaN)
+            val lng = item.optDouble("location_lng", Double.NaN)
+            if (lat.isFinite() && lng.isFinite()) withCoordinates++
+        }
+
+        binding.containerInvestments.addView(createInfoCard("Liczba zgłoszeń: ${issues.length()}"))
+        categoryCounts.toList()
+            .sortedByDescending { it.second }
+            .forEach { (category, count) ->
+                binding.containerInvestments.addView(createInfoCard("$category: $count"))
+            }
+
+        statusCounts.toList()
+            .sortedByDescending { it.second }
+            .forEach { (status, count) ->
+                binding.containerSpending.addView(createInfoCard("$status: $count"))
+            }
     }
 
     private fun createInfoCard(text: String): View {

@@ -20,16 +20,9 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.urbanfix.ui.home.HomeFragment"
+        android:name="com.example.urbanfix.ui.dashboard.DashboardFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_navigation_home_to_road_damage_report"
-            app:destination="@id/navigation_road_damage_report" />
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_issue_detail"
-            app:destination="@id/navigation_issue_detail" />
-    </fragment>
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_road_damage_report"
@@ -40,16 +33,27 @@
             android:name="category"
             app:argType="string"
             android:defaultValue="Drogi" />
+        <action
+            android:id="@+id/action_navigation_road_damage_report_to_navigation_location_picker"
+            app:destination="@id/navigation_location_picker" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.urbanfix.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard">
+        android:id="@+id/navigation_location_picker"
+        android:name="com.example.urbanfix.ui.issues.LocationPickerFragment"
+        android:label="@string/issue_map_picker_title"
+        tools:layout="@layout/fragment_location_picker" />
 
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.example.urbanfix.ui.home.HomeFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_dashboard_to_navigation_issue_detail"
+            android:id="@+id/action_navigation_home_to_road_damage_report"
+            app:destination="@id/navigation_road_damage_report" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_issue_detail"
             app:destination="@id/navigation_issue_detail" />
     </fragment>
 
