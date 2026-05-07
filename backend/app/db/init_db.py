@@ -115,6 +115,32 @@ def _ensure_issue_votes_table() -> None:
             conn.execute(text("CREATE INDEX ix_issue_votes_user_id ON issue_votes (user_id)"))
 
 
+def _ensure_issue_coordinates_columns() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("issues"):
+        return
+    cols = {c["name"] for c in insp.get_columns("issues")}
+    with engine.begin() as conn:
+        if "location_lat" not in cols:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN location_lat FLOAT"))
+        if "location_lng" not in cols:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN location_lng FLOAT"))
+
+
+def _ensure_issue_status_timestamps_columns() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("issues"):
+        return
+    cols = {c["name"] for c in insp.get_columns("issues")}
+    with engine.begin() as conn:
+        if "reviewed_at" not in cols:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN reviewed_at TIMESTAMP"))
+        if "accepted_at" not in cols:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN accepted_at TIMESTAMP"))
+        if "rejected_at" not in cols:
+            conn.execute(text("ALTER TABLE issues ADD COLUMN rejected_at TIMESTAMP"))
+
+
 def _migrate_issue_status_legacy() -> None:
     """Stare zgłoszenia NEW → Zgłoszone."""
     insp = inspect(engine)
@@ -124,6 +150,54 @@ def _migrate_issue_status_legacy() -> None:
         conn.execute(text("UPDATE issues SET status = 'Zgłoszone' WHERE status IN ('NEW', 'new')"))
 
 
+def _migrate_issue_categories_legacy() -> None:
+    """Ujednolicenie historycznych wartości kategorii do wspólnego słownika."""
+    insp = inspect(engine)
+    if not insp.has_table("issues"):
+        return
+    with engine.begin() as conn:
+        conn.execute(text("UPDATE issues SET category = 'Drogi' WHERE lower(trim(category)) IN ('drogi', 'droga')"))
+        conn.execute(text("UPDATE issues SET category = 'Zieleń' WHERE lower(trim(category)) IN ('zielen', 'zieleń')"))
+        conn.execute(
+            text(
+                "UPDATE issues SET category = 'Wandalizm' "
+                "WHERE lower(trim(category)) IN ('wandalizm', 'akt wandalizmu')"
+            )
+        )
+        conn.execute(
+            text(
+                "UPDATE issues SET category = 'Oświetlenie' "
+                "WHERE lower(trim(category)) IN ('oswietlenie', 'oświetlenie')"
+            )
+        )
+        conn.execute(
+            text(
+                "UPDATE issues SET category = 'Inwestycje' "
+                "WHERE lower(trim(category)) IN ('inwestycje', 'inwestycja')"
+            )
+        )
+        conn.execute(
+            text(
+                "UPDATE issues SET category = 'Porządek' "
+                "WHERE lower(trim(category)) IN ('porzadek', 'porządek')"
+            )
+        )
+
+
+def _migrate_reserved_user_emails() -> None:
+    """Podmiana technicznego maila seedera z domeny specjalnej na poprawną."""
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "UPDATE users SET email = 'demo.seed@urbanfixdemo.com' "
+                "WHERE lower(trim(email)) = 'demo.seed@urbanfix.local'"
+            )
+        )
+
+
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_user_name_columns()
@@ -131,4 +205,8 @@ def init_db() -> None:
     _ensure_issue_image_path_column()
     _ensure_issue_vote_count_column()
     _ensure_issue_votes_table()
+    _ensure_issue_coordinates_columns()
+    _ensure_issue_status_timestamps_columns()
     _migrate_issue_status_legacy()
+    _migrate_issue_categories_legacy()
+    _migrate_reserved_user_emails()

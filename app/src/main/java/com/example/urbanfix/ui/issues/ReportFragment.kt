@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.data.BackendUserJson
 import com.example.urbanfix.databinding.FragmentRoadDamageReportBinding
@@ -45,7 +46,9 @@ class ReportFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val categoryArg: String by lazy { arguments?.getString("category") ?: "Drogi" }
-    private val availableCategories = listOf("Drogi", "Zieleń", "Inwestycje", "Oświetlenie", "Porządek")
+    private val availableCategories: List<String> by lazy {
+        resources.getStringArray(R.array.issue_category_values).toList()
+    }
 
     private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
@@ -55,6 +58,9 @@ class ReportFragment : Fragment() {
 
     private val geocoder by lazy { Geocoder(requireContext(), Locale.forLanguageTag("pl-PL")) }
     private lateinit var addressAdapter: NoFilterAdapter
+    private var selectedLocationLat: Double? = null
+    private var selectedLocationLng: Double? = null
+    private var updatingLocationProgrammatically = false
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -119,12 +125,29 @@ class ReportFragment : Fragment() {
         setupPhotoButtons()
         setupLocationAutocomplete()
         setupLocationButton()
+        setupMapPicker()
         binding.buttonSubmitIssue.setOnClickListener { submitIssue() }
+        parentFragmentManager.setFragmentResultListener(REPORT_MAP_PICKER_RESULT, viewLifecycleOwner) { _, bundle ->
+            selectedLocationLat = bundle.getDouble(REPORT_MAP_PICKER_LAT)
+            selectedLocationLng = bundle.getDouble(REPORT_MAP_PICKER_LNG)
+            val address = bundle.getString(REPORT_MAP_PICKER_ADDRESS).orEmpty().trim()
+            if (address.isNotEmpty()) {
+                setLocationText(address)
+            }
+        }
     }
 
     private fun setupLocationButton() {
         binding.inputLayoutIssueLocation.setEndIconOnClickListener {
             checkLocationPermissionAndFetch()
+        }
+    }
+
+    private fun setupMapPicker() {
+        binding.buttonPickLocationOnMap.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_navigation_road_damage_report_to_navigation_location_picker,
+            )
         }
     }
 
@@ -194,9 +217,17 @@ class ReportFragment : Fragment() {
         binding.progressIssue.visibility = View.GONE
         val addressStr = address?.getAddressLine(0)
         if (addressStr != null) {
-            binding.editIssueLocation.setText(addressStr, false)
+            selectedLocationLat = address.latitude
+            selectedLocationLng = address.longitude
+            setLocationText(addressStr)
             binding.editIssueLocation.dismissDropDown()
         }
+    }
+
+    private fun setLocationText(text: String) {
+        updatingLocationProgrammatically = true
+        binding.editIssueLocation.setText(text, false)
+        updatingLocationProgrammatically = false
     }
 
     private fun setupUserInformation() {
@@ -236,6 +267,10 @@ class ReportFragment : Fragment() {
         binding.editIssueLocation.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!updatingLocationProgrammatically) {
+                    selectedLocationLat = null
+                    selectedLocationLng = null
+                }
                 val query = s?.toString()?.trim().orEmpty()
                 if (query.length >= 3) {
                     searchAddresses(query)
@@ -341,6 +376,11 @@ class ReportFragment : Fragment() {
         } else {
             binding.inputLayoutIssueLocation.error = null
         }
+        if (selectedLocationLat == null || selectedLocationLng == null) {
+            binding.inputLayoutIssueLocation.error = "Wskaz lokalizacje na mapie"
+            showSnackbar("Aby wyslac zgloszenie, kliknij 'Wskaz na mapie' i wybierz punkt")
+            valid = false
+        }
         if (!valid) return
 
         val email = auth.currentUser?.email
@@ -375,6 +415,8 @@ class ReportFragment : Fragment() {
                         addFormField(writer, outputStream, boundary, "category", selectedCategory)
 
                         addFormField(writer, outputStream, boundary, "location", location)
+                        selectedLocationLat?.let { addFormField(writer, outputStream, boundary, "location_lat", it.toString()) }
+                        selectedLocationLng?.let { addFormField(writer, outputStream, boundary, "location_lng", it.toString()) }
                         addFormField(writer, outputStream, boundary, "user_id", userId.toString())
 
                         photoFile?.let { file ->
@@ -456,6 +498,8 @@ class ReportFragment : Fragment() {
         binding.editIssueCategory.setText(categoryArg, false)
         binding.editIssueTitle.text = null
         binding.editIssueDescription.text = null
+        selectedLocationLat = null
+        selectedLocationLng = null
         binding.imagePreview.visibility = View.GONE
         photoFile = null
         photoUri = null
@@ -466,6 +510,7 @@ class ReportFragment : Fragment() {
         binding.buttonSubmitIssue.isEnabled = !loading
         binding.buttonAddPhoto.isEnabled = !loading
         binding.buttonSelectGallery.isEnabled = !loading
+        binding.buttonPickLocationOnMap.isEnabled = !loading
         binding.editIssueTitle.isEnabled = !loading
         binding.editIssueDescription.isEnabled = !loading
         binding.editIssueLocation.isEnabled = !loading

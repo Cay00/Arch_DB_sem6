@@ -18,7 +18,9 @@ import coil.load
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import org.json.JSONObject
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.Executors
 
@@ -130,11 +132,13 @@ class IssueDetailFragment : Fragment() {
         } else {
             created.ifEmpty { "—" }
         }
-        bindStatusTimeline(j.optString("status").ifEmpty { "—" }, created)
+        bindStatusTimeline(j)
         bindVoteButtons(j)
     }
 
-    private fun bindStatusTimeline(status: String, createdAt: String) {
+    private fun bindStatusTimeline(issue: JSONObject) {
+        val status = issue.optString("status").ifEmpty { "—" }
+        val createdAt = issue.optString("created_at", "")
         val rows = listOf(
             Triple(binding.textTimelineDotReported, binding.textTimelineLabelReported, binding.textTimelineDateReported),
             Triple(binding.textTimelineDotReviewed, binding.textTimelineLabelReviewed, binding.textTimelineDateReviewed),
@@ -143,21 +147,54 @@ class IssueDetailFragment : Fragment() {
         )
         val statuses = resources.getStringArray(R.array.issue_status_values).toList()
         val currentIndex = statuses.indexOf(status).coerceAtLeast(0)
-        val dateText = createdAtToLabel(createdAt)
+        val dateByIndex = listOf(
+            createdAtToLabel(createdAt),
+            createdAtToLabel(issue.optString("reviewed_at", "")),
+            createdAtToLabel(issue.optString("accepted_at", "")),
+            createdAtToLabel(issue.optString("rejected_at", "")),
+        )
         rows.forEachIndexed { index, (dot, label, date) ->
             val reached = index <= currentIndex
             val color = if (reached) 0xFF2E7D32.toInt() else 0xFF9E9E9E.toInt()
             dot.setTextColor(color)
             label.setTextColor(color)
-            date.text = if (reached) dateText else getString(R.string.issue_detail_timeline_pending)
+            date.text = if (reached) {
+                dateByIndex[index].ifBlank { getString(R.string.issue_detail_timeline_pending) }
+            } else {
+                getString(R.string.issue_detail_timeline_pending)
+            }
         }
     }
 
     private fun createdAtToLabel(raw: String): String =
-        runCatching {
-            val dt = OffsetDateTime.parse(raw)
-            dt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-        }.getOrDefault(getString(R.string.issue_detail_timeline_unknown_date))
+        if (raw.isBlank() || raw.equals("null", ignoreCase = true)) {
+            ""
+        } else {
+            parseIssueDateTime(raw)?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                ?: getString(R.string.issue_detail_timeline_unknown_date)
+        }
+
+    private fun parseIssueDateTime(raw: String): OffsetDateTime? {
+        val value = raw.trim()
+        if (value.isEmpty() || value.equals("null", ignoreCase = true)) return null
+        return runCatching { OffsetDateTime.parse(value) }.getOrNull()
+            ?: runCatching {
+                val localIso = LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                localIso.atOffset(ZoneOffset.UTC)
+            }.getOrNull()
+            ?: runCatching {
+                val local = LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                local.atOffset(ZoneOffset.UTC)
+            }.getOrNull()
+            ?: runCatching {
+                val local = LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"))
+                local.atOffset(ZoneOffset.UTC)
+            }.getOrNull()
+            ?: runCatching {
+                val local = LocalDateTime.parse(value.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"))
+                local.atOffset(ZoneOffset.UTC)
+            }.getOrNull()
+    }
 
     private fun bindVoteButtons(j: JSONObject) {
         val issueId = arguments?.getInt("issueId") ?: -1

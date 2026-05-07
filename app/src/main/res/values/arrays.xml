@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="issue_category_values">
+        <item>Drogi</item>
+        <item>Zieleń</item>
+        <item>Wandalizm</item>
+        <item>Oświetlenie</item>
+        <item>Inwestycje</item>
+        <item>Porządek</item>
+    </string-array>
+
     <string-array name="issue_status_values">
         <item>Zgłoszone</item>
         <item>Rozpatrywane</item>

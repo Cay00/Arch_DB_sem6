@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Filter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -31,6 +33,7 @@ class HomeFragment : Fragment() {
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private var allIssues: List<JSONObject> = emptyList()
     private var activeFilter: IssueFilter = IssueFilter.ALL
+    private var activeStatusFilter: String = ""
 
     private fun backendBaseUrl(): String = requireContext().getString(R.string.backend_base_url)
 
@@ -46,6 +49,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fabCreateIssue.setOnClickListener { navigateToReport() }
+        setupStatusFilter()
         binding.toggleIssueFilters.check(R.id.button_filter_all)
         binding.toggleIssueFilters.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener
@@ -60,6 +64,21 @@ class HomeFragment : Fragment() {
         loadIssues()
     }
 
+    private fun setupStatusFilter() {
+        val allLabel = getString(R.string.home_status_filter_all)
+        val statuses = resources.getStringArray(R.array.issue_status_values).toList()
+        val options = listOf(allLabel) + statuses
+        activeStatusFilter = allLabel
+        val adapter = NoFilterAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line)
+        adapter.updateData(options)
+        binding.dropdownHomeStatusFilter.setAdapter(adapter)
+        binding.dropdownHomeStatusFilter.setText(allLabel, false)
+        binding.dropdownHomeStatusFilter.setOnItemClickListener { _, _, position, _ ->
+            activeStatusFilter = options[position]
+            renderFilteredIssues()
+        }
+    }
+
     private fun loadIssues() {
         val email = auth.currentUser?.email?.trim().orEmpty()
         if (email.isEmpty()) {
@@ -71,7 +90,26 @@ class HomeFragment : Fragment() {
         Thread {
             runCatching {
                 val enc = URLEncoder.encode(email, Charsets.UTF_8.name())
-                val url = "${backendBaseUrl()}/issues?community_viewer_email=$enc"
+                val userUrl = "${backendBaseUrl()}/users/by-email?email=$enc"
+                val userConn = (URL(userUrl).openConnection() as HttpURLConnection).apply {
+                    requestMethod = "GET"
+                    connectTimeout = 10_000
+                    readTimeout = 10_000
+                }
+                val accountType = try {
+                    if (userConn.responseCode != HttpURLConnection.HTTP_OK) {
+                        error("HTTP ${userConn.responseCode}")
+                    }
+                    val body = userConn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    JSONObject(body).optString("account_type", "").trim().lowercase()
+                } finally {
+                    userConn.disconnect()
+                }
+                val url = if (accountType == "official") {
+                    "${backendBaseUrl()}/issues?official_email=$enc"
+                } else {
+                    "${backendBaseUrl()}/issues?community_viewer_email=$enc"
+                }
                 val c = (URL(url).openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
                     connectTimeout = 10_000
@@ -107,12 +145,14 @@ class HomeFragment : Fragment() {
     private fun renderFilteredIssues() {
         val filtered = allIssues.filter { issue ->
             val category = issue.optString("category").lowercase()
-            when (activeFilter) {
+            val categoryMatches = when (activeFilter) {
                 IssueFilter.ALL -> true
                 IssueFilter.ROADS -> category.contains("drog")
                 IssueFilter.GREENERY -> category.contains("ziel")
                 IssueFilter.VANDALISM -> category.contains("wandal")
             }
+            val statusMatches = issueMatchesStatusFilter(issue)
+            categoryMatches && statusMatches
         }
         binding.containerHomeIssues.removeAllViews()
         if (filtered.isEmpty()) {
@@ -122,6 +162,14 @@ class HomeFragment : Fragment() {
         }
         binding.textHomeIssuesEmpty.visibility = View.GONE
         filtered.forEach { binding.containerHomeIssues.addView(createIssueCard(it)) }
+    }
+
+    private fun issueMatchesStatusFilter(issue: JSONObject): Boolean {
+        val selected = activeStatusFilter
+        val allLabel = getString(R.string.home_status_filter_all)
+        if (selected.isBlank() || selected == allLabel) return true
+        val status = issue.optString("status").trim()
+        return status.equals(selected, ignoreCase = true)
     }
 
     private fun createIssueCard(issue: JSONObject): View {
@@ -233,5 +281,33 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private class NoFilterAdapter(context: android.content.Context, layout: Int) :
+        ArrayAdapter<String>(context, layout) {
+        private val items = mutableListOf<String>()
+
+        fun updateData(newData: List<String>) {
+            items.clear()
+            items.addAll(newData)
+            clear()
+            addAll(newData)
+            notifyDataSetChanged()
+        }
+
+        override fun getFilter(): Filter {
+            return object : Filter() {
+                override fun performFiltering(constraint: CharSequence?): FilterResults {
+                    val results = FilterResults()
+                    results.values = items
+                    results.count = items.size
+                    return results
+                }
+
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                    notifyDataSetChanged()
+                }
+            }
+        }
     }
 }

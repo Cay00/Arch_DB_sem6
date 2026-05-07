@@ -141,6 +141,17 @@
                 android:completionThreshold="3" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonPickLocationOnMap"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp"
+            android:text="@string/issue_pick_on_map"
+            app:cornerRadius="12dp"
+            app:icon="@android:drawable/ic_menu_mapmode" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -55,6 +55,24 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </HorizontalScrollView>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutHomeStatusFilter"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/home_status_filter_hint"
+            app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/dropdownHomeStatusFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:minHeight="48dp"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <ProgressBar
             android:id="@+id/progress_home_issues"
             android:layout_width="wrap_content"
