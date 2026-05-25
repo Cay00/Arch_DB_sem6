@@ -124,7 +124,9 @@ class IssueDetailFragment : Fragment() {
         binding.textIssueDescription.text = j.optString("description").ifEmpty { "—" }
         bindIssuePhoto(j.optString("image_url", "").trim())
         binding.textIssueCategory.text = j.optString("category").ifEmpty { "—" }
-        binding.textIssueStatus.text = j.optString("status").ifEmpty { "—" }
+        val status = j.optString("status").ifEmpty { "—" }
+        binding.textIssueStatus.text = status
+        IssueStatusStyle.applyStatusChip(binding.textIssueStatus, status)
         binding.textIssueLocation.text = j.optString("location").ifEmpty { "—" }
         val created = j.optString("created_at", "")
         binding.textIssueCreated.text = if (created.contains("T")) {
@@ -155,7 +157,7 @@ class IssueDetailFragment : Fragment() {
         )
         rows.forEachIndexed { index, (dot, label, date) ->
             val reached = index <= currentIndex
-            val color = if (reached) 0xFF2E7D32.toInt() else 0xFF9E9E9E.toInt()
+            val color = IssueStatusStyle.timelineColorForStep(requireContext(), index, reached)
             dot.setTextColor(color)
             label.setTextColor(color)
             date.text = if (reached) {
@@ -296,6 +298,7 @@ class IssueDetailFragment : Fragment() {
                         bindIssue(j)
                     } catch (_: Exception) {
                         binding.textIssueStatus.text = selected
+                        IssueStatusStyle.applyStatusChip(binding.textIssueStatus, selected)
                     }
                     Snackbar.make(binding.root, R.string.issue_detail_status_saved, Snackbar.LENGTH_SHORT).show()
                 } else {

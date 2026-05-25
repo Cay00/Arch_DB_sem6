@@ -6,20 +6,19 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:fillViewport="true"
-    android:paddingTop="4dp"
-    android:paddingBottom="24dp">
+    android:paddingBottom="@dimen/spacing_screen_bottom">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="8dp">
+        android:paddingHorizontal="@dimen/spacing_screen_horizontal"
+        android:paddingTop="@dimen/spacing_screen_vertical"
+        android:paddingBottom="@dimen/spacing_block">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueCategory"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.Urbanfix.TextInput.Outlined.ExposedDropdown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/issue_hint_category"
@@ -30,7 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp"
                 tools:text="Drogi" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -38,16 +38,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/spacing_element"
             android:text="@string/issue_form_status_new"
             android:textAppearance="@style/TextAppearance.Urbanfix.BodySecondary" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueUserIdentity"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Urbanfix.TextInput.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="@dimen/spacing_block"
             android:hint="@string/issue_hint_user_id"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
@@ -58,16 +58,17 @@
                 android:enabled="false"
                 android:focusable="false"
                 android:inputType="textEmailAddress"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueUserDisplayName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Urbanfix.TextInput.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/spacing_element"
             android:hint="@string/profile_name_label"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
@@ -78,14 +79,15 @@
                 android:enabled="false"
                 android:focusable="false"
                 android:inputType="textPersonName|textCapWords"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp"
                 tools:text="Jan Kowalski" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueTitle"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Urbanfix.TextInput.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -96,16 +98,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/issue_hint_title"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueDescription"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Urbanfix.TextInput.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="@dimen/spacing_block"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -121,10 +124,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputLayoutIssueLocation"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.Urbanfix.TextInput.Outlined.ExposedDropdown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="@dimen/spacing_block"
             android:hint="@string/issue_hint_location"
             app:endIconMode="custom"
             app:endIconDrawable="@android:drawable/ic_menu_mylocation"
@@ -136,7 +139,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp"
                 android:completionThreshold="3" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -173,7 +177,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:text="Aparat"
                 android:textSize="14sp"
                 app:cornerRadius="12dp"
@@ -186,7 +191,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:minHeight="52dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:text="Galeria"
                 android:textSize="14sp"
                 app:cornerRadius="12dp"
@@ -218,7 +224,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="@dimen/spacing_block"
             android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

@@ -13,4 +13,43 @@
     <!-- Kafelki home: obrys i tło ikony -->
     <color name="home_tile_stroke">#14000000</color>
     <color name="home_tile_icon_scrim">#18E65100</color>
+
+    <!-- Status zgłoszenia -->
+    <color name="issue_status_zgloszone">#FF1976D2</color>
+    <color name="issue_status_zgloszone_bg">#1A1976D2</color>
+    <color name="issue_status_zgloszone_text">#FF1565C0</color>
+
+    <color name="issue_status_rozpatrywane">#FFF9A825</color>
+    <color name="issue_status_rozpatrywane_bg">#1AF9A825</color>
+    <color name="issue_status_rozpatrywane_text">#FFF57F17</color>
+
+    <color name="issue_status_zaakceptowane">#FF2E7D32</color>
+    <color name="issue_status_zaakceptowane_bg">#1A2E7D32</color>
+    <color name="issue_status_zaakceptowane_text">#FF2E7D32</color>
+
+    <color name="issue_status_odrzucone">#FFC62828</color>
+    <color name="issue_status_odrzucone_bg">#1AC62828</color>
+    <color name="issue_status_odrzucone_text">#FFC62828</color>
+
+    <color name="issue_status_unknown_text">#FF757575</color>
+    <color name="issue_status_timeline_inactive">#FF9E9E9E</color>
+
+    <!-- Kategorie zgłoszeń (wykresy) -->
+    <color name="issue_category_drogi">#FFE65100</color>
+    <color name="issue_category_zielen">#FF43A047</color>
+    <color name="issue_category_wandalizm">#FF8E24AA</color>
+    <color name="issue_category_oswietlenie">#FFFFA000</color>
+    <color name="issue_category_inwestycje">#FF0288D1</color>
+    <color name="issue_category_porzadek">#FF5D4037</color>
+    <color name="issue_category_unknown">#FF757575</color>
+
+    <color name="chart_bar_track">#FFE8E8E8</color>
+
+    <!-- Status planów inwestycyjnych -->
+    <color name="investment_plan_status_planned">#FF1565C0</color>
+    <color name="investment_plan_status_planned_bg">#1A1976D2</color>
+    <color name="investment_plan_status_in_progress">#FFF57F17</color>
+    <color name="investment_plan_status_in_progress_bg">#1AF9A825</color>
+    <color name="investment_plan_status_completed">#FF2E7D32</color>
+    <color name="investment_plan_status_completed_bg">#1A2E7D32</color>
 </resources>

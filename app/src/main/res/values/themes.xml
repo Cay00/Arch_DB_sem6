@@ -39,4 +39,24 @@
         <item name="cardBackgroundColor">?attr/colorSurface</item>
         <item name="rippleColor">@color/bottom_nav_ripple</item>
     </style>
+
+    <style name="Widget.Urbanfix.TextInput.Outlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCollapsedPaddingTop">@dimen/input_box_padding_vertical</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+    </style>
+
+    <style name="Widget.Urbanfix.TextInput.Outlined.ExposedDropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxCollapsedPaddingTop">@dimen/input_box_padding_vertical</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+    </style>
+
+    <style name="Widget.Urbanfix.FilterButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
 </resources>

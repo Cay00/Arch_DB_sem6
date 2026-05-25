@@ -24,7 +24,7 @@
             android:id="@+id/text_auth_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_element"
             android:gravity="center"
             android:text="@string/auth_heading_login"
             android:textAppearance="@style/TextAppearance.Urbanfix.Headline" />
@@ -33,7 +33,7 @@
             android:id="@+id/text_auth_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
+            android:layout_marginBottom="@dimen/spacing_section"
             android:gravity="center"
             android:text="@string/auth_subtitle_login"
             android:textAppearance="@style/TextAppearance.Urbanfix.Subtitle" />
@@ -42,7 +42,7 @@
             android:id="@+id/group_register_fields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/spacing_block"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
@@ -86,10 +86,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_first_name"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Urbanfix.TextInput.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/spacing_block"
                 android:hint="@string/auth_hint_first_name"
                 app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
@@ -99,16 +99,17 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="givenName"
                     android:inputType="textPersonName|textCapWords"
-                    android:minHeight="56dp"
+                    android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                     android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_last_name"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Urbanfix.TextInput.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="@dimen/spacing_element"
                 android:hint="@string/auth_hint_last_name"
                 app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
 
@@ -118,14 +119,15 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="familyName"
                     android:inputType="textPersonName|textCapWords"
-                    android:minHeight="56dp"
+                    android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                     android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_email"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Urbanfix.TextInput.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/auth_email_hint"
@@ -137,16 +139,17 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="emailAddress"
                 android:inputType="textEmailAddress"
-                android:minHeight="56dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Urbanfix.TextInput.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_block"
             android:hint="@string/auth_password_hint"
             app:endIconMode="password_toggle"
             app:hintTextAppearance="@style/TextAppearance.Urbanfix.InputHint">
@@ -157,7 +160,8 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="password"
                 android:inputType="textPassword"
-                android:minHeight="56dp"
+                android:minHeight="@dimen/input_min_height"
+                android:paddingVertical="@dimen/spacing_tight"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,7 +169,7 @@
             android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="@dimen/spacing_section"
             android:minHeight="56dp"
             android:text="@string/auth_action_login"
             android:textSize="18sp" />
@@ -181,8 +185,8 @@
             android:id="@+id/text_switch_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:padding="12dp"
+            android:layout_marginTop="@dimen/spacing_section"
+            android:padding="@dimen/spacing_block"
             android:text="@string/auth_switch_to_register"
             android:textAppearance="@style/TextAppearance.Urbanfix.Link" />
     </LinearLayout>

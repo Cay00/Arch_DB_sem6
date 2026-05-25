@@ -30,6 +30,180 @@ def _ensure_user_name_columns() -> None:
                 )
 
 
+def _ensure_user_firebase_uid_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "firebase_uid" in cols:
+        return
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN firebase_uid VARCHAR(128)"))
+        conn.execute(
+            text("CREATE UNIQUE INDEX IF NOT EXISTS ix_users_firebase_uid ON users (firebase_uid)")
+        )
+
+
+def _ensure_user_hashed_password_column() -> None:
+    """Stary Postgres: kolumna `password_hash` zamiast `hashed_password`."""
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "hashed_password" in cols:
+        return
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN hashed_password VARCHAR(255)"))
+        if "password_hash" in cols:
+            conn.execute(
+                text(
+                    "UPDATE users SET hashed_password = password_hash "
+                    "WHERE hashed_password IS NULL AND password_hash IS NOT NULL"
+                )
+            )
+
+
+def _ensure_user_display_name_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "display_name" in cols:
+        return
+    is_sqlite = engine.dialect.name == "sqlite"
+    with engine.begin() as conn:
+        if is_sqlite:
+            conn.execute(text("ALTER TABLE users ADD COLUMN display_name VARCHAR(255) DEFAULT ''"))
+        else:
+            conn.execute(
+                text("ALTER TABLE users ADD COLUMN display_name VARCHAR(255) NOT NULL DEFAULT ''")
+            )
+        conn.execute(
+            text(
+                """
+                UPDATE users SET display_name = trim(first_name || ' ' || last_name)
+                WHERE (display_name IS NULL OR display_name = '')
+                  AND trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) <> ''
+                """
+            )
+        )
+        if is_sqlite:
+            conn.execute(
+                text(
+                    """
+                    UPDATE users SET display_name = substr(email, 1, instr(email, '@') - 1)
+                    WHERE display_name IS NULL OR display_name = ''
+                    """
+                )
+            )
+        else:
+            conn.execute(
+                text(
+                    """
+                    UPDATE users SET display_name = split_part(email, '@', 1)
+                    WHERE display_name IS NULL OR display_name = ''
+                    """
+                )
+            )
+
+
+def _ensure_user_created_at_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "created_at" in cols:
+        return
+    is_sqlite = engine.dialect.name == "sqlite"
+    with engine.begin() as conn:
+        if is_sqlite:
+            conn.execute(
+                text("ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP")
+            )
+        else:
+            conn.execute(
+                text(
+                    "ALTER TABLE users ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT now()"
+                )
+            )
+
+
+def _drop_legacy_user_columns() -> None:
+    """Stary Postgres: `password_hash` i `role` (NOT NULL) blokują INSERT z nowego modelu."""
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    with engine.begin() as conn:
+        if "password_hash" in cols:
+            conn.execute(text("ALTER TABLE users DROP COLUMN password_hash"))
+        if "role" in cols:
+            conn.execute(text("ALTER TABLE users DROP COLUMN role"))
+
+
+def _normalize_user_account_type_values() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "account_type" not in cols:
+        return
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                """
+                UPDATE users SET account_type = lower(trim(account_type))
+                WHERE account_type IS NOT NULL
+                """
+            )
+        )
+        conn.execute(
+            text(
+                """
+                UPDATE users SET account_type = 'official'
+                WHERE account_type IN ('urzednik', 'urzędnik', 'official')
+                """
+            )
+        )
+        conn.execute(
+            text(
+                """
+                UPDATE users SET account_type = 'citizen'
+                WHERE account_type IS NULL OR account_type = ''
+                   OR account_type NOT IN ('citizen', 'official')
+                """
+            )
+        )
+
+
+def _migrate_user_role_to_account_type() -> None:
+    """Stary Postgres: kolumna `role` zamiast `account_type`."""
+    insp = inspect(engine)
+    if not insp.has_table("users"):
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    if "role" not in cols or "account_type" not in cols:
+        return
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                """
+                UPDATE users SET account_type = role
+                WHERE role IS NOT NULL AND trim(role) <> ''
+                  AND (account_type IS NULL OR account_type = 'citizen')
+                """
+            )
+        )
+        conn.execute(
+            text(
+                """
+                UPDATE users SET account_type = 'official'
+                WHERE lower(trim(role)) IN ('official', 'urzednik', 'urzędnik')
+                """
+            )
+        )
+
+
 def _ensure_user_account_type_column() -> None:
     insp = inspect(engine)
     if not insp.has_table("users"):
@@ -201,7 +375,14 @@ def _migrate_reserved_user_emails() -> None:
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
     _ensure_user_name_columns()
+    _ensure_user_firebase_uid_column()
+    _ensure_user_hashed_password_column()
+    _ensure_user_display_name_column()
+    _ensure_user_created_at_column()
     _ensure_user_account_type_column()
+    _migrate_user_role_to_account_type()
+    _normalize_user_account_type_values()
+    _drop_legacy_user_columns()
     _ensure_issue_image_path_column()
     _ensure_issue_vote_count_column()
     _ensure_issue_votes_table()

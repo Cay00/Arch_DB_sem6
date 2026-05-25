@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentMyIssuesBinding
+import com.example.urbanfix.ui.UiSpacing
+import com.example.urbanfix.ui.issues.IssueStatusStyle
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONArray
@@ -118,9 +120,9 @@ class MyIssuesFragment : Fragment() {
             layoutParams = ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-            ).apply { bottomMargin = res.getDimensionPixelSize(R.dimen.issue_list_card_margin_bottom) }
-            setContentPadding(18, 18, 18, 18)
+            ).apply { bottomMargin = UiSpacing.cardMarginBottomPx(context) }
         }
+        UiSpacing.applyCardContentPadding(card, context)
         val col = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
         col.addView(
             TextView(context).apply {
@@ -130,8 +132,11 @@ class MyIssuesFragment : Fragment() {
         )
         col.addView(
             TextView(context).apply {
-                text = getString(R.string.issue_card_status, issue.optString("status", "—"))
+                val status = issue.optString("status", "—")
+                text = getString(R.string.issue_card_status, status)
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_BodySecondary)
+                IssueStatusStyle.applyStatusText(this, status)
+                setPadding(0, UiSpacing.elementGapPx(context), 0, 0)
             },
         )
         card.addView(col)
