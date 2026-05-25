@@ -85,6 +85,11 @@
     <string name="home_status_filter_all">Wszystkie statusy</string>
     <string name="home_create_issue">Utwórz zgłoszenie</string>
     <string name="home_issues_empty">Brak zgłoszeń dla wybranego typu.</string>
+    <string name="home_stats_categories_title">Kategorie zgłoszeń</string>
+    <string name="home_stats_status_title">Statusy zgłoszeń</string>
+    <string name="home_stats_total">Łącznie: %1$d zgłoszeń</string>
+    <string name="home_stats_section_issues">Lista zgłoszeń</string>
+    <string name="home_stats_empty">Brak danych do wyświetlenia wykresu.</string>
     <string name="my_issues_empty">Brak zgłoszeń dla tego konta.</string>
     <string name="my_issues_load_error">Nie udało się pobrać zgłoszeń.</string>
     <string name="issue_detail_title">Szczegóły zgłoszenia</string>

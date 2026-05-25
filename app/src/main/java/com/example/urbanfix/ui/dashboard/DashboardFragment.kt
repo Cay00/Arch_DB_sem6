@@ -10,6 +10,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentDashboardBinding
+import com.example.urbanfix.ui.issues.IssueStatusStyle
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -99,8 +100,15 @@ class DashboardFragment : Fragment() {
         statusCounts.toList()
             .sortedByDescending { it.second }
             .forEach { (status, count) ->
-                binding.containerSpending.addView(createInfoCard("$status: $count"))
+                binding.containerSpending.addView(createStatusStatCard(status, count))
             }
+    }
+
+    private fun createStatusStatCard(status: String, count: Int): View {
+        val card = createInfoCard("$status: $count")
+        val label = ((card as ViewGroup).getChildAt(0) as? LinearLayout)?.getChildAt(0) as? TextView
+        label?.let { IssueStatusStyle.applyStatusText(it, status) }
+        return card
     }
 
     private fun createInfoCard(text: String): View {

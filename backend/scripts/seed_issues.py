@@ -11,7 +11,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from app.core.issue_category import ALLOWED_CATEGORIES
-from app.core.issue_status import ALL_STATUSES
+from app.core.issue_status import ALL_STATUSES, ZGLOSZONE
 from app.db.init_db import init_db
 from app.db.session import SessionLocal
 from app.models.issue import Issue
@@ -37,18 +37,38 @@ SAMPLE_LOCATIONS = [
     "ul. Buforowa",
 ]
 
-SAMPLE_TITLES = [
-    "Uszkodzona nawierzchnia",
-    "Zniszczony chodnik",
-    "Niebezpieczne przejście",
-    "Awaria oświetlenia",
-    "Zalegające śmieci",
-    "Zdewastowana infrastruktura",
-    "Zniszczona zieleń",
-    "Nieporządek przy przystanku",
-    "Niedokończona inwestycja",
-    "Uszkodzona latarnia",
-]
+CATEGORY_TITLES: dict[str, list[str]] = {
+    "Drogi": [
+        "Dziura na jezdni",
+        "Pęknięty chodnik",
+        "Nierówna nawierzchnia przy przejściu",
+    ],
+    "Zieleń": [
+        "Uszkodzone drzewo przy ulicy",
+        "Zaniedbany skwer",
+        "Zniszczona trawa na osiedlu",
+    ],
+    "Wandalizm": [
+        "Zdewastowana tablica informacyjna",
+        "Graffiti na elewacji",
+        "Uszkodzona ławka w parku",
+    ],
+    "Oświetlenie": [
+        "Nie działa latarnia",
+        "Migoczące oświetlenie przejścia",
+        "Ciemny pas ruchu pieszego",
+    ],
+    "Inwestycje": [
+        "Niedokończony remont chodnika",
+        "Pozostawione materiały budowlane",
+        "Brak oznakowania robót drogowych",
+    ],
+    "Porządek": [
+        "Zalegające śmieci przy kontenerach",
+        "Nielegalne wysypisko",
+        "Bałagan przy przystanku autobusowym",
+    ],
+}
 
 SAMPLE_DESCRIPTIONS = [
     "Mieszkańcy zgłaszają, że problem utrudnia codzienne poruszanie się i wymaga interwencji.",
@@ -89,20 +109,23 @@ def _ensure_seed_user(email: str) -> int:
         return user.id
 
 
-def seed_issues(count: int, user_email: str) -> None:
+def seed_issues(count: int, user_email: str, *, status: str | None = None) -> None:
     init_db()
     user_id = _ensure_seed_user(user_email)
     categories = list(ALLOWED_CATEGORIES)
     statuses = list(ALL_STATUSES)
 
     with SessionLocal() as db:
-        for _ in range(count):
+        for i in range(count):
             lat, lng = _random_point_wroclaw()
+            category = categories[i % len(categories)]
+            titles = CATEGORY_TITLES.get(category, ["Zgłoszenie miejskie"])
+            issue_status = status if status else statuses[i % len(statuses)]
             issue = Issue(
-                title=random.choice(SAMPLE_TITLES),
+                title=titles[i % len(titles)],
                 description=random.choice(SAMPLE_DESCRIPTIONS),
-                category=random.choice(categories),
-                status=random.choice(statuses),
+                category=category,
+                status=issue_status,
                 location=_random_location_label(lat, lng),
                 location_lat=lat,
                 location_lng=lng,
@@ -112,7 +135,7 @@ def seed_issues(count: int, user_email: str) -> None:
             db.add(issue)
         db.commit()
 
-    print(f"Dodano {count} przykładowych zgłoszeń dla użytkownika: {user_email}")
+    print(f"Dodano {count} przykładowych zgłoszeń (Wrocław) dla użytkownika: {user_email}")
 
 
 def main() -> None:
@@ -124,10 +147,19 @@ def main() -> None:
         default="demo.seed@urbanfixdemo.com",
         help="E-mail użytkownika, pod którego dodawane są zgłoszenia",
     )
+    parser.add_argument(
+        "--status",
+        type=str,
+        default=ZGLOSZONE,
+        help=f"Status wszystkich rekordów (domyślnie: {ZGLOSZONE!r} — widoczne na mapie)",
+    )
     args = parser.parse_args()
     if args.count <= 0:
         raise SystemExit("--count musi być > 0")
-    seed_issues(args.count, args.user_email.strip())
+    chosen = (args.status or "").strip() or ZGLOSZONE
+    if chosen not in ALL_STATUSES:
+        raise SystemExit(f"--status musi być jednym z: {', '.join(sorted(ALL_STATUSES))}")
+    seed_issues(args.count, args.user_email.strip(), status=chosen)
 
 
 if __name__ == "__main__":

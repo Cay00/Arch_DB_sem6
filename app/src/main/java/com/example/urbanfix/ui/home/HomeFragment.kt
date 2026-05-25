@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentHomeBinding
+import com.example.urbanfix.ui.issues.IssueCategoryStyle
+import com.example.urbanfix.ui.issues.IssueStatusStyle
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONArray
@@ -87,10 +89,11 @@ class HomeFragment : Fragment() {
             return
         }
         setLoading(true)
+        val baseUrl = backendBaseUrl()
         Thread {
             runCatching {
                 val enc = URLEncoder.encode(email, Charsets.UTF_8.name())
-                val userUrl = "${backendBaseUrl()}/users/by-email?email=$enc"
+                val userUrl = "$baseUrl/users/by-email?email=$enc"
                 val userConn = (URL(userUrl).openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
                     connectTimeout = 10_000
@@ -106,9 +109,9 @@ class HomeFragment : Fragment() {
                     userConn.disconnect()
                 }
                 val url = if (accountType == "official") {
-                    "${backendBaseUrl()}/issues?official_email=$enc"
+                    "$baseUrl/issues?official_email=$enc"
                 } else {
-                    "${backendBaseUrl()}/issues?community_viewer_email=$enc"
+                    "$baseUrl/issues?community_viewer_email=$enc"
                 }
                 val c = (URL(url).openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
@@ -129,6 +132,7 @@ class HomeFragment : Fragment() {
                     for (i in 0 until arr.length()) list += arr.getJSONObject(i)
                     allIssues = list
                     setLoading(false)
+                    renderStats()
                     renderFilteredIssues()
                 }
             }.onFailure {
@@ -140,6 +144,69 @@ class HomeFragment : Fragment() {
                 }
             }
         }.start()
+    }
+
+    private fun renderStats() {
+        val ctx = requireContext()
+        binding.containerHomeStats.removeAllViews()
+        if (allIssues.isEmpty()) {
+            binding.textHomeIssuesSection.visibility = View.GONE
+            return
+        }
+        val categoryCounts = linkedMapOf<String, Int>()
+        val statusCounts = linkedMapOf<String, Int>()
+        allIssues.forEach { issue ->
+            val category = issue.optString("category").ifBlank { "Inne" }
+            categoryCounts[category] = (categoryCounts[category] ?: 0) + 1
+            val status = issue.optString("status").ifBlank { "Brak statusu" }
+            statusCounts[status] = (statusCounts[status] ?: 0) + 1
+        }
+        val total = allIssues.size
+        val subtitle = getString(R.string.home_stats_total, total)
+        val emptyMsg = getString(R.string.home_stats_empty)
+        val categoryEntries = categoryCounts.entries
+            .sortedByDescending { it.value }
+            .map { (label, count) ->
+                HomeBarChart.Entry(
+                    label = label,
+                    count = count,
+                    color = IssueCategoryStyle.accentColor(ctx, label),
+                )
+            }
+        val statusOrder = resources.getStringArray(R.array.issue_status_values).toList()
+        val statusEntries = statusCounts.entries
+            .sortedWith(
+                compareBy<Map.Entry<String, Int>> { (status, _) ->
+                    val idx = statusOrder.indexOfFirst { it.equals(status, ignoreCase = true) }
+                    if (idx < 0) Int.MAX_VALUE else idx
+                }.thenByDescending { it.value },
+            )
+            .map { (label, count) ->
+                HomeBarChart.Entry(
+                    label = label,
+                    count = count,
+                    color = IssueStatusStyle.accentColor(ctx, label),
+                )
+            }
+        binding.containerHomeStats.addView(
+            HomeBarChart.createChartCard(
+                ctx,
+                getString(R.string.home_stats_categories_title),
+                subtitle,
+                categoryEntries,
+                emptyMsg,
+            ),
+        )
+        binding.containerHomeStats.addView(
+            HomeBarChart.createChartCard(
+                ctx,
+                getString(R.string.home_stats_status_title),
+                subtitle,
+                statusEntries,
+                emptyMsg,
+            ),
+        )
+        binding.textHomeIssuesSection.visibility = View.VISIBLE
     }
 
     private fun renderFilteredIssues() {
@@ -226,10 +293,11 @@ class HomeFragment : Fragment() {
         )
         tags.addView(
             TextView(context).apply {
-                text = issue.optString("status").ifBlank { "—" }
+                val status = issue.optString("status").ifBlank { "—" }
+                text = status
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Label)
-                setBackgroundResource(R.drawable.bg_issue_tag_status)
                 setPadding(12, 6, 12, 6)
+                IssueStatusStyle.applyStatusChip(this, status)
             },
             LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -244,7 +312,7 @@ class HomeFragment : Fragment() {
             card.isFocusable = true
             card.setOnClickListener {
                 findNavController().navigate(
-                    R.id.action_navigation_home_to_navigation_issue_detail,
+                    R.id.action_navigation_dashboard_to_navigation_issue_detail,
                     bundleOf("issueId" to issueId),
                 )
             }
@@ -275,7 +343,7 @@ class HomeFragment : Fragment() {
 
     private fun navigateToReport() {
         val bundle = bundleOf("category" to "Drogi")
-        findNavController().navigate(R.id.action_navigation_home_to_road_damage_report, bundle)
+        findNavController().navigate(R.id.action_navigation_dashboard_to_road_damage_report, bundle)
     }
 
     override fun onDestroyView() {

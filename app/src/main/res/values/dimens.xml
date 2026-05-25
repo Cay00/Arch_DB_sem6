@@ -15,6 +15,10 @@
     <dimen name="issue_list_card_content_padding_top">18dp</dimen>
     <dimen name="issue_list_card_content_padding_bottom">18dp</dimen>
     <dimen name="issue_list_card_gap_status_to_title">10dp</dimen>
+    <dimen name="home_chart_bar_height">28dp</dimen>
+    <dimen name="home_chart_label_width">108dp</dimen>
+    <dimen name="home_chart_row_gap">12dp</dimen>
+    <dimen name="home_stats_card_margin_bottom">14dp</dimen>
     <dimen name="issue_list_card_gap_title_to_body">12dp</dimen>
     <dimen name="issue_list_card_margin_bottom">10dp</dimen>
     <dimen name="issue_list_container_padding_bottom">8dp</dimen>

@@ -177,7 +177,6 @@
                             android:layout_width="24dp"
                             android:layout_height="wrap_content"
                             android:text="●"
-                            android:textColor="#2E7D32"
                             android:textSize="16sp" />
 
                         <LinearLayout

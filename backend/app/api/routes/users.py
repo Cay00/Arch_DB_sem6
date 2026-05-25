@@ -93,8 +93,14 @@ def sync_user(
     try:
         db.commit()
         db.refresh(user)
-    except IntegrityError:
+    except IntegrityError as exc:
         db.rollback()
+        err = str(getattr(exc, "orig", exc)).lower()
+        if "not-null" in err or "not null" in err or "null value" in err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Błąd schematu bazy (stare kolumny users). Zrestartuj backend — init_db zaktualizuje tabele.",
+            ) from None
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="E-mail lub Firebase UID jest już zajęty.",

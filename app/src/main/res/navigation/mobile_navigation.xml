@@ -50,10 +50,10 @@
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_home_to_road_damage_report"
+            android:id="@+id/action_navigation_dashboard_to_road_damage_report"
             app:destination="@id/navigation_road_damage_report" />
         <action
-            android:id="@+id/action_navigation_home_to_navigation_issue_detail"
+            android:id="@+id/action_navigation_dashboard_to_navigation_issue_detail"
             app:destination="@id/navigation_issue_detail" />
     </fragment>
 
