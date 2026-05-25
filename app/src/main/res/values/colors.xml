@@ -44,4 +44,12 @@
     <color name="issue_category_unknown">#FF757575</color>
 
     <color name="chart_bar_track">#FFE8E8E8</color>
+
+    <!-- Status planów inwestycyjnych -->
+    <color name="investment_plan_status_planned">#FF1565C0</color>
+    <color name="investment_plan_status_planned_bg">#1A1976D2</color>
+    <color name="investment_plan_status_in_progress">#FFF57F17</color>
+    <color name="investment_plan_status_in_progress_bg">#1AF9A825</color>
+    <color name="investment_plan_status_completed">#FF2E7D32</color>
+    <color name="investment_plan_status_completed_bg">#1A2E7D32</color>
 </resources>

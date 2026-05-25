@@ -10,6 +10,8 @@ import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentDashboardBinding
+import com.example.urbanfix.ui.UiSpacing
+import com.example.urbanfix.ui.home.HomeInvestmentPlans
 import com.example.urbanfix.ui.issues.IssueStatusStyle
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
@@ -38,6 +40,7 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        HomeInvestmentPlans.renderSection(requireContext(), binding.containerDashboardInvestmentPlans)
         loadStats()
     }
 
@@ -121,9 +124,9 @@ class DashboardFragment : Fragment() {
             layoutParams = ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-            ).apply { bottomMargin = resources.getDimensionPixelSize(R.dimen.issue_list_card_margin_bottom) }
-            setContentPadding(18, 18, 18, 18)
+            ).apply { bottomMargin = UiSpacing.cardMarginBottomPx(context) }
         }
+        UiSpacing.applyCardContentPadding(card, context)
         val label = TextView(context).apply {
             this.text = text
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Body)

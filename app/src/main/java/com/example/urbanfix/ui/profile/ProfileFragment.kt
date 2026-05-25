@@ -12,6 +12,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.data.BackendUserJson
+import com.example.urbanfix.ui.UiSpacing
 import com.example.urbanfix.ui.issues.IssueStatusStyle
 import com.example.urbanfix.ui.issues.issueTileBodyAfterTitle
 import com.example.urbanfix.databinding.FragmentProfileBinding
@@ -126,7 +127,8 @@ class ProfileFragment : Fragment() {
         binding.profileIssuesList.visibility = View.VISIBLE
         val ctx = requireContext()
         val density = resources.displayMetrics.density
-        val padV = (8 * density).toInt()
+        val padV = UiSpacing.elementGapPx(ctx)
+        val labelGap = UiSpacing.spacingLabelToValuePx(ctx)
         val divH = (1 * density).toInt().coerceAtLeast(1)
         for (i in 0 until issues.length()) {
             val issue = issues.getJSONObject(i)
@@ -163,7 +165,7 @@ class ProfileFragment : Fragment() {
                     text = issue.optString("title").trim().ifEmpty { getString(R.string.profile_dash) }
                     textSize = 17f
                     setTypeface(null, Typeface.BOLD)
-                    setPadding(0, (4 * density).toInt(), 0, 0)
+                    setPadding(0, labelGap, 0, 0)
                 },
             )
             block.addView(
@@ -174,8 +176,8 @@ class ProfileFragment : Fragment() {
                         issue.optString("location"),
                         issue.optString("description"),
                     )
-                    textSize = 14f
-                    setPadding(0, (4 * density).toInt(), 0, 0)
+                    textSize = 15f
+                    setPadding(0, labelGap, 0, 0)
                 },
             )
             binding.profileIssuesList.addView(block)

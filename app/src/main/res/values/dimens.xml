@@ -1,35 +1,70 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- Marginesy ekranu -->
+    <dimen name="spacing_screen_horizontal">20dp</dimen>
+    <dimen name="spacing_screen_vertical">16dp</dimen>
+    <dimen name="spacing_screen_bottom">24dp</dimen>
+    <dimen name="activity_horizontal_margin">@dimen/spacing_screen_horizontal</dimen>
+    <dimen name="activity_vertical_margin">@dimen/spacing_screen_vertical</dimen>
+
+    <!-- Odstępy między sekcjami i elementami -->
+    <dimen name="spacing_section">20dp</dimen>
+    <dimen name="spacing_block">14dp</dimen>
+    <dimen name="spacing_element">10dp</dimen>
+    <dimen name="spacing_tight">6dp</dimen>
+    <dimen name="spacing_label_to_value">8dp</dimen>
+
     <dimen name="bottom_nav_corner_radius">20dp</dimen>
-    <dimen name="auth_padding_top_base">24dp</dimen>
+
+    <!-- Auth -->
+    <dimen name="auth_padding_top_base">28dp</dimen>
     <dimen name="auth_padding_horizontal">24dp</dimen>
-    <dimen name="auth_padding_bottom">32dp</dimen>
-    <!-- Wspólne z kafelkami zgłoszeń na Home (Widget.Urbanfix.HomeIssueTile) -->
+    <dimen name="auth_padding_bottom">36dp</dimen>
+
+    <!-- Karty i kafelki -->
     <dimen name="home_issue_tile_corner_radius">20dp</dimen>
     <dimen name="home_issue_tile_elevation">1dp</dimen>
     <dimen name="home_issue_tile_stroke_width">1dp</dimen>
-    <!-- Karty na liście zgłoszeń — treść jak padding wewnątrz kafelków Home -->
-    <dimen name="issue_list_card_content_padding_horizontal">18dp</dimen>
-    <dimen name="issue_list_card_content_padding_top">18dp</dimen>
-    <dimen name="issue_list_card_content_padding_bottom">18dp</dimen>
-    <dimen name="issue_list_card_gap_status_to_title">10dp</dimen>
-    <dimen name="home_chart_bar_height">28dp</dimen>
-    <dimen name="home_chart_label_width">108dp</dimen>
-    <dimen name="home_chart_row_gap">12dp</dimen>
-    <dimen name="home_stats_card_margin_bottom">14dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_content_padding_horizontal">20dp</dimen>
+    <dimen name="card_content_padding_vertical">20dp</dimen>
+    <dimen name="card_margin_bottom">12dp</dimen>
+
+    <!-- Alias dla istniejących odwołań -->
+    <dimen name="issue_list_card_content_padding_horizontal">@dimen/card_content_padding_horizontal</dimen>
+    <dimen name="issue_list_card_content_padding_top">@dimen/card_content_padding_vertical</dimen>
+    <dimen name="issue_list_card_content_padding_bottom">@dimen/card_content_padding_vertical</dimen>
+    <dimen name="issue_list_card_margin_bottom">@dimen/card_margin_bottom</dimen>
+    <dimen name="issue_list_card_gap_status_to_title">12dp</dimen>
     <dimen name="issue_list_card_gap_title_to_body">12dp</dimen>
-    <dimen name="issue_list_card_margin_bottom">10dp</dimen>
-    <dimen name="issue_list_container_padding_bottom">8dp</dimen>
-    <dimen name="dashboard_content_top_spacing">24dp</dimen>
+    <dimen name="issue_list_container_padding_bottom">12dp</dimen>
+
+    <!-- Chipy (kategoria, status) -->
+    <dimen name="chip_padding_horizontal">14dp</dimen>
+    <dimen name="chip_padding_vertical">8dp</dimen>
+    <dimen name="chip_gap">10dp</dimen>
+
+    <!-- Wykresy na Home -->
+    <dimen name="home_chart_bar_height">32dp</dimen>
+    <dimen name="home_chart_label_width">112dp</dimen>
+    <dimen name="home_chart_row_gap">14dp</dimen>
+    <dimen name="home_chart_track_padding">6dp</dimen>
+    <dimen name="home_stats_card_margin_bottom">16dp</dimen>
+
+    <dimen name="dashboard_content_top_spacing">20dp</dimen>
     <dimen name="map_marker_padding">72dp</dimen>
-    <!-- Szczegóły zgłoszenia (ekran) -->
-    <dimen name="issue_detail_screen_padding_h">16dp</dimen>
-    <dimen name="issue_detail_screen_padding_v">16dp</dimen>
-    <dimen name="issue_detail_card_margin_bottom">12dp</dimen>
-    <dimen name="issue_detail_section_margin_top">16dp</dimen>
-    <dimen name="issue_detail_label_to_value_gap">6dp</dimen>
-    <dimen name="issue_detail_title_margin_top">10dp</dimen>
+
+    <!-- Pola formularza -->
+    <dimen name="input_min_height">56dp</dimen>
+    <dimen name="input_box_padding_vertical">14dp</dimen>
+
+    <!-- Szczegóły zgłoszenia -->
+    <dimen name="issue_detail_screen_padding_h">@dimen/spacing_screen_horizontal</dimen>
+    <dimen name="issue_detail_screen_padding_v">@dimen/spacing_screen_vertical</dimen>
+    <dimen name="issue_detail_card_margin_bottom">@dimen/card_margin_bottom</dimen>
+    <dimen name="issue_detail_section_margin_top">18dp</dimen>
+    <dimen name="issue_detail_label_to_value_gap">@dimen/spacing_label_to_value</dimen>
+    <dimen name="issue_detail_title_margin_top">12dp</dimen>
     <dimen name="issue_detail_image_max_height">280dp</dimen>
+    <dimen name="issue_detail_timeline_row_gap">12dp</dimen>
+    <dimen name="issue_detail_timeline_dot_width">28dp</dimen>
 </resources>

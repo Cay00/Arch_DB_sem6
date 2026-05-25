@@ -60,8 +60,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"
                     android:background="@drawable/bg_issue_detail_id_chip"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
+                    android:paddingHorizontal="@dimen/chip_padding_horizontal"
+                    android:paddingVertical="@dimen/chip_padding_vertical"
                     android:textAppearance="@style/TextAppearance.Urbanfix.Label"
                     android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
@@ -87,8 +87,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_issue_tag_category"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"
+                        android:paddingHorizontal="@dimen/chip_padding_horizontal"
+                        android:paddingVertical="@dimen/chip_padding_vertical"
                         android:textAppearance="@style/TextAppearance.Urbanfix.Label"
                         android:textStyle="bold"
                         tools:text="Drogi" />
@@ -97,10 +97,10 @@
                         android:id="@+id/text_issue_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="@dimen/chip_gap"
                         android:background="@drawable/bg_issue_tag_status"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"
+                        android:paddingHorizontal="@dimen/chip_padding_horizontal"
+                        android:paddingVertical="@dimen/chip_padding_vertical"
                         android:textAppearance="@style/TextAppearance.Urbanfix.Label"
                         android:textStyle="bold"
                         tools:text="Zgłoszone" />
@@ -163,18 +163,19 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/spacing_block"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/row_timeline_reported"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingVertical="@dimen/spacing_tight">
 
                         <TextView
                             android:id="@+id/text_timeline_dot_reported"
-                            android:layout_width="24dp"
+                            android:layout_width="@dimen/issue_detail_timeline_dot_width"
                             android:layout_height="wrap_content"
                             android:text="●"
                             android:textSize="16sp" />
@@ -205,12 +206,13 @@
                         android:id="@+id/row_timeline_reviewed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="@dimen/issue_detail_timeline_row_gap"
+                        android:orientation="horizontal"
+                        android:paddingVertical="@dimen/spacing_tight">
 
                         <TextView
                             android:id="@+id/text_timeline_dot_reviewed"
-                            android:layout_width="24dp"
+                            android:layout_width="@dimen/issue_detail_timeline_dot_width"
                             android:layout_height="wrap_content"
                             android:text="●"
                             android:textSize="16sp" />
@@ -241,12 +243,13 @@
                         android:id="@+id/row_timeline_accepted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="@dimen/issue_detail_timeline_row_gap"
+                        android:orientation="horizontal"
+                        android:paddingVertical="@dimen/spacing_tight">
 
                         <TextView
                             android:id="@+id/text_timeline_dot_accepted"
-                            android:layout_width="24dp"
+                            android:layout_width="@dimen/issue_detail_timeline_dot_width"
                             android:layout_height="wrap_content"
                             android:text="●"
                             android:textSize="16sp" />
@@ -277,12 +280,13 @@
                         android:id="@+id/row_timeline_rejected"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="@dimen/issue_detail_timeline_row_gap"
+                        android:orientation="horizontal"
+                        android:paddingVertical="@dimen/spacing_tight">
 
                         <TextView
                             android:id="@+id/text_timeline_dot_rejected"
-                            android:layout_width="24dp"
+                            android:layout_width="@dimen/issue_detail_timeline_dot_width"
                             android:layout_height="wrap_content"
                             android:text="●"
                             android:textSize="16sp" />
@@ -336,7 +340,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    style="@style/Widget.Urbanfix.TextInput.Outlined.ExposedDropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/issue_detail_section_margin_top"

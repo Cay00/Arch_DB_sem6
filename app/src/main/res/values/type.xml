@@ -11,13 +11,14 @@
         <item name="android:lineSpacingMultiplier">1.2</item>
     </style>
     <style name="TextAppearance.Urbanfix.Body" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:lineSpacingMultiplier">1.25</item>
     </style>
     <style name="TextAppearance.Urbanfix.BodySecondary" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:lineSpacingMultiplier">1.15</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
     </style>
     <style name="TextAppearance.Urbanfix.Title" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">22sp</item>
@@ -50,9 +51,9 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
     <style name="TextAppearance.Urbanfix.IssueDetailValue" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textSize">19sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:lineSpacingMultiplier">1.28</item>
     </style>
 
     <style name="TextAppearance.Urbanfix.BottomNav.Active" parent="TextAppearance.MaterialComponents.Caption">

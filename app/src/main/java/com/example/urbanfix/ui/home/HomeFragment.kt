@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.urbanfix.R
 import com.example.urbanfix.databinding.FragmentHomeBinding
+import com.example.urbanfix.ui.UiSpacing
 import com.example.urbanfix.ui.issues.IssueCategoryStyle
 import com.example.urbanfix.ui.issues.IssueStatusStyle
 import com.google.android.material.card.MaterialCardView
@@ -151,6 +152,7 @@ class HomeFragment : Fragment() {
         binding.containerHomeStats.removeAllViews()
         if (allIssues.isEmpty()) {
             binding.textHomeIssuesSection.visibility = View.GONE
+            binding.containerHomeIssues.removeAllViews()
             return
         }
         val categoryCounts = linkedMapOf<String, Int>()
@@ -250,10 +252,11 @@ class HomeFragment : Fragment() {
             layoutParams = ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-            ).apply { bottomMargin = res.getDimensionPixelSize(R.dimen.issue_list_card_margin_bottom) }
-            setContentPadding(18, 18, 18, 18)
+            ).apply { bottomMargin = UiSpacing.cardMarginBottomPx(context) }
         }
+        UiSpacing.applyCardContentPadding(card, context)
         val col = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
+        val elementGap = UiSpacing.elementGapPx(context)
         val titleRow = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
         titleRow.addView(
             TextView(context).apply {
@@ -276,19 +279,19 @@ class HomeFragment : Fragment() {
                 val whenReported = relativeTime(issue.optString("created_at"))
                 text = "$city • $whenReported"
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_BodySecondary)
-                setPadding(0, 8, 0, 0)
+                setPadding(0, elementGap, 0, 0)
             },
         )
         val tags = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
-            setPadding(0, 10, 0, 0)
+            setPadding(0, elementGap, 0, 0)
         }
         tags.addView(
             TextView(context).apply {
                 text = issue.optString("category").ifBlank { "—" }
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Label)
                 setBackgroundResource(R.drawable.bg_issue_tag_category)
-                setPadding(12, 6, 12, 6)
+                UiSpacing.applyChipPadding(this, context)
             },
         )
         tags.addView(
@@ -296,13 +299,12 @@ class HomeFragment : Fragment() {
                 val status = issue.optString("status").ifBlank { "—" }
                 text = status
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_Label)
-                setPadding(12, 6, 12, 6)
                 IssueStatusStyle.applyStatusChip(this, status)
             },
             LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-            ).apply { marginStart = 8 },
+            ).apply { marginStart = UiSpacing.chipGapPx(context) },
         )
         col.addView(tags)
         card.addView(col)

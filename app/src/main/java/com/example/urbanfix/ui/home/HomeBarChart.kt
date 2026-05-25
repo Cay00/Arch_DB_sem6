@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import com.example.urbanfix.R
+import com.example.urbanfix.ui.UiSpacing
 import com.google.android.material.card.MaterialCardView
 
 /**
@@ -41,8 +42,8 @@ object HomeBarChart {
             ).apply {
                 bottomMargin = context.resources.getDimensionPixelSize(R.dimen.home_stats_card_margin_bottom)
             }
-            setContentPadding(18, 18, 18, 18)
         }
+        UiSpacing.applyCardContentPadding(card, context)
         val col = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
         col.addView(
             TextView(context).apply {
@@ -54,7 +55,7 @@ object HomeBarChart {
             TextView(context).apply {
                 text = subtitle
                 TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_BodySecondary)
-                setPadding(0, 4, 0, 0)
+                setPadding(0, UiSpacing.elementGapPx(context), 0, 0)
             },
         )
         if (entries.isEmpty()) {
@@ -62,7 +63,7 @@ object HomeBarChart {
                 TextView(context).apply {
                     text = emptyMessage
                     TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Urbanfix_BodySecondary)
-                    setPadding(0, 14, 0, 0)
+                    setPadding(0, UiSpacing.blockGapPx(context), 0, 0)
                 },
             )
         } else {
@@ -108,7 +109,8 @@ object HomeBarChart {
                 marginStart = (8 * density).toInt()
                 marginEnd = (8 * density).toInt()
             }
-            setPadding((4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt())
+            val trackPad = context.resources.getDimensionPixelSize(R.dimen.home_chart_track_padding)
+            setPadding(trackPad, trackPad, trackPad, trackPad)
         }
         if (entry.count > 0) {
             track.addView(
